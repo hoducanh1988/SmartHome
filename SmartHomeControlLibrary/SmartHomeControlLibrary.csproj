@@ -1,0 +1,728 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F888D01-09AE-45B3-A4DF-B172BE596D4A}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>SmartHomeControlLibrary</RootNamespace>
+    <AssemblyName>SmartHomeControlLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\SmartHomeProject\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="reachframework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UtilityPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UtilityPack.1.0.0\lib\net45\UtilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ALL-DETECTOR\FINAL\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ALL-DETECTOR\FINAL\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ALL-DETECTOR\FINAL\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ALL-DETECTOR\FINAL\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ALL-DETECTOR\FINAL\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ALL-DETECTOR\FINAL\function\myGlobal.cs" />
+    <Compile Include="CO-DETECTOR\FINAL\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\function\myGlobal.cs" />
+    <Compile Include="CO-DETECTOR\PCBA\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\PCBA\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\PCBA\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\PCBA\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\PCBA\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\PCBA\function\myGlobal.cs" />
+    <Compile Include="CO-DETECTOR\RD\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\RD\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\RD\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\RD\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\RD\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\RD\function\myGlobal.cs" />
+    <Compile Include="GAS-DETECTOR\FINAL\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\function\myGlobal.cs" />
+    <Compile Include="GAS-DETECTOR\PCBA\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\PCBA\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\PCBA\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\PCBA\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\PCBA\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\PCBA\function\myGlobal.cs" />
+    <Compile Include="GAS-DETECTOR\RD\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\RD\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\RD\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\RD\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\RD\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\RD\function\myGlobal.cs" />
+    <Compile Include="MODULE-ZIGBEE\PCBA\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MODULE-ZIGBEE\PCBA\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MODULE-ZIGBEE\PCBA\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SMART-SWITCH\FINAL\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\FINAL\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\FINAL\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\FINAL\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\FINAL\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\FINAL\function\myGlobal.cs" />
+    <Compile Include="SMART-SWITCH\PCBA-Touch\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\PCBA-Touch\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\PCBA-Touch\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\PCBA-Touch\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\PCBA-Touch\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMART-SWITCH\PCBA-Touch\function\myGlobal.cs" />
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\function\myGlobal.cs" />
+    <Compile Include="SMOKE-DETECTOR\PCBA\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\PCBA\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\PCBA\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\PCBA\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\PCBA\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\PCBA\function\myGlobal.cs" />
+    <Compile Include="USB-DONGLE\FINAL\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\FINAL\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\FINAL\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\FINAL\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\FINAL\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\FINAL\function\myGlobal.cs" />
+    <Compile Include="USB-DONGLE\PCBA\design\ABOUT.xaml.cs">
+      <DependentUpon>ABOUT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\PCBA\design\HELP.xaml.cs">
+      <DependentUpon>HELP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\PCBA\design\LOG.xaml.cs">
+      <DependentUpon>LOG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\PCBA\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\PCBA\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="USB-DONGLE\PCBA\function\myGlobal.cs" />
+    <Compile Include="MODULE-ZIGBEE\PCBA\design\RUNALL.xaml.cs">
+      <DependentUpon>RUNALL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MODULE-ZIGBEE\PCBA\design\SETTING.xaml.cs">
+      <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MODULE-ZIGBEE\PCBA\function\myGlobal.cs" />
+    <Compile Include="__Common__\ProjectMsAccess.cs" />
+    <Compile Include="__Common__\ProjectSqlServer.cs" />
+    <Compile Include="__Common__\ProjectTestItem.cs" />
+    <Compile Include="__Common__\SmartHomeDevice.cs" />
+    <Compile Include="__Common__\ProjectUtility.cs" />
+    <Compile Include="__Userctrl__\ucFinal.xaml.cs">
+      <DependentUpon>ucFinal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Userctrl__\ucUserFinal.xaml.cs">
+      <DependentUpon>ucUserFinal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\InputDeviceID.xaml.cs">
+      <DependentUpon>InputDeviceID.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\LogWindow.xaml.cs">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\MultiLED.xaml.cs">
+      <DependentUpon>MultiLED.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\MultiTouchButton.xaml.cs">
+      <DependentUpon>MultiTouchButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\PowerSwitch.xaml.cs">
+      <DependentUpon>PowerSwitch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\SingleLED.xaml.cs">
+      <DependentUpon>SingleLED.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="__Window__\SingleSpeaker.xaml.cs">
+      <DependentUpon>SingleSpeaker.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SMART-SWITCH\PCBA-Power\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ALL-DETECTOR\FINAL\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ALL-DETECTOR\FINAL\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ALL-DETECTOR\FINAL\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ALL-DETECTOR\FINAL\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ALL-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\PCBA\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\PCBA\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\PCBA\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\PCBA\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\PCBA\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\RD\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\RD\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\RD\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\RD\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\RD\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\PCBA\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\PCBA\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\PCBA\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\PCBA\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\PCBA\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\RD\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\RD\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\RD\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\RD\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\RD\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MODULE-ZIGBEE\PCBA\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MODULE-ZIGBEE\PCBA\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MODULE-ZIGBEE\PCBA\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\FINAL\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\FINAL\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\FINAL\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\FINAL\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\PCBA-Touch\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\PCBA-Touch\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\PCBA-Touch\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\PCBA-Touch\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMART-SWITCH\PCBA-Touch\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\PCBA\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\PCBA\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\PCBA\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\PCBA\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\PCBA\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\FINAL\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\FINAL\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\FINAL\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\FINAL\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\PCBA\design\ABOUT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\PCBA\design\HELP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\PCBA\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\PCBA\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="USB-DONGLE\PCBA\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MODULE-ZIGBEE\PCBA\design\RUNALL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MODULE-ZIGBEE\PCBA\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Userctrl__\ucFinal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Userctrl__\ucUserFinal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\InputDeviceID.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\MultiLED.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\MultiTouchButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\PowerSwitch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\SingleLED.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\SingleSpeaker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{B691E011-1797-432E-907A-4D8C69339129}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="ADOX">
+      <Guid>{00000600-0000-0010-8000-00AA006D2EA4}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Access">
+      <Guid>{4AFFC9A0-5F99-101B-AF4E-00AA003F0F07}</Guid>
+      <VersionMajor>9</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Access.Dao">
+      <Guid>{4AC9E1DA-5BAD-4AC7-86E3-24F4CDCECA28}</Guid>
+      <VersionMajor>12</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

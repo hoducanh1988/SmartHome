@@ -1,0 +1,51 @@
+﻿<Window x:Class="SmartHomeControlLibrary.__Window__.MultiLED"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SmartHomeControlLibrary.__Window__"
+        mc:Ignorable="d"
+        Title="Multi LED" Height="380" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+
+    <StackPanel Margin="10,5,5,0">
+        <TextBlock FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Text="Nhấn nút 'Bật LED Xanh' và 'Bật LED Vàng' quan sát trạng thái LED trên sản phẩm: "/>
+        <TextBlock Foreground="Lime" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Text="     - LED sáng cả 2 màu xanh và vàng = PASS"/>
+        <TextBlock Foreground="Red" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Text="     - LED không sáng 1 hoặc cả 2 màu = FAIL"/>
+        <TextBlock FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" Text=""/>
+        <Border Height="120" Margin="0,10,0,0" BorderBrush="#777777" BorderThickness="1">
+            <WrapPanel >
+                <Grid Height="120" Width="120">
+                    <Path x:Name="path1" Fill="White" Tag="led1" MouseDown="Path_MouseDown" Stroke="Black" StrokeThickness="1" Data="M 20,30 A 20,25 90 1 1 80,30 L 80,30 80,60 90,60 90,70 10,70 10,60 20,60 20,30"/>
+                    <Path Fill="Black" Stroke="Black" StrokeThickness="1" Data="M 30,70 L 40,70 40,90 30,90"/>
+                    <Path Fill="Black" Stroke="Black" StrokeThickness="1" Data="M 60,70 L 70,70 70,90 60,90"/>
+                    <Label Margin="-20,0,0,0" FontWeight="Bold" Content="LED-1" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                    <Label Tag="led1" MouseDown="Label_MouseDown" Background="Transparent" x:Name="lblledtext1" FontSize="15" Margin="-15,-30,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="???"/>
+                </Grid>
+                <Grid Height="120" Width="120">
+                    <Path x:Name="path2" Fill="White" Tag="led2" MouseDown="Path_MouseDown" Stroke="Black" StrokeThickness="1" Data="M 20,30 A 20,25 90 1 1 80,30 L 80,30 80,60 90,60 90,70 10,70 10,60 20,60 20,30"/>
+                    <Path Fill="Black" Stroke="Black" StrokeThickness="1" Data="M 30,70 L 40,70 40,90 30,90"/>
+                    <Path Fill="Black" Stroke="Black" StrokeThickness="1" Data="M 60,70 L 70,70 70,90 60,90"/>
+                    <Label Margin="-20,0,0,0" FontWeight="Bold" Content="LED-2" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                    <Label Tag="led2" MouseDown="Label_MouseDown" Background="Transparent" x:Name="lblledtext2" FontSize="15" Margin="-15,-30,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="???"/>
+                </Grid>
+                <Grid Height="120" Width="120">
+                    <Path x:Name="path3" Fill="White" Tag="led3" MouseDown="Path_MouseDown" Stroke="Black" StrokeThickness="1" Data="M 20,30 A 20,25 90 1 1 80,30 L 80,30 80,60 90,60 90,70 10,70 10,60 20,60 20,30"/>
+                    <Path Fill="Black" Stroke="Black" StrokeThickness="1" Data="M 30,70 L 40,70 40,90 30,90"/>
+                    <Path Fill="Black" Stroke="Black" StrokeThickness="1" Data="M 60,70 L 70,70 70,90 60,90"/>
+                    <Label Margin="-20,0,0,0" FontWeight="Bold" Content="LED-3" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                    <Label Tag="led3" MouseDown="Label_MouseDown" Background="Transparent" x:Name="lblledtext3" FontSize="15" Margin="-15,-30,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="???"/>
+                </Grid>
+                <TextBlock FontWeight="SemiBold" FontSize="18" Foreground="Red" Width="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="Click vào biểu tượng '???' của từng LED để đánh giá LED tương ứng là PASS / FAIL"/>
+            </WrapPanel>
+        </Border>
+
+        <WrapPanel>
+            <Button Tag="ok" Click="Button_Click" Margin="0,10,0,0" FontSize="15" FontWeight="SemiBold" Height="35" Content="OK" HorizontalAlignment="Left" Width="100"/>
+            <Button Tag="ledon" Click="Button_Click" Margin="220,10,0,0" FontSize="15" FontWeight="SemiBold" Height="35" Content="Bật LED Xanh" HorizontalAlignment="Left" Width="100"/>
+            <Button Tag="ledoff" Click="Button_Click" Margin="10,10,0,0" FontSize="15" FontWeight="SemiBold" Height="35" Content="Bật LED Vàng" HorizontalAlignment="Left" Width="100"/>
+        </WrapPanel>
+        
+    </StackPanel>
+
+</Window>

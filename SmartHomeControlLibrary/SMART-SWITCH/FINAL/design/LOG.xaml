@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="SmartHomeControlLibrary.SMARTSWITCH.FINALFUNCTION.LOG"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartHomeControlLibrary.SMARTSWITCH.FINALFUNCTION"
+             mc:Ignorable="d" 
+             d:DesignHeight="595" d:DesignWidth="985" Background="White">
+
+    <Border BorderBrush="#999999" BorderThickness="1,1,1,1">
+        <Grid Margin="5">
+            <StackPanel>
+                <Label FontSize="13" Content="Vui lòng chọn loại dữ liệu log cần truy vấn:"/>
+                <WrapPanel>
+                    <ComboBox x:Name="cbb_logtype" FontWeight="SemiBold" Height="25" IsEditable="True" Width="400" HorizontalAlignment="Left"/>
+                    <Button Content="Go" Margin="10,0,0,0" Width="70" Click="Button_Click"/>
+                </WrapPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+    
+</UserControl>

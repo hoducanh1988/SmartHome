@@ -1,0 +1,59 @@
+﻿<Window x:Class="SmartHomeControlLibrary.__Window__.SingleSpeaker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SmartHomeControlLibrary.__Window__"
+        mc:Ignorable="d"
+        Title="Validate Single Speaker Window" Height="280" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Background="#EAEAEA">
+            <Border BorderBrush="#777777" BorderThickness="1,1,0,1">
+                <Grid Margin="0,0,0,50">
+                    <Polygon x:Name="pg_Speaker" Fill="White" Stroke="Black" StrokeThickness="1" Points="120,100 120,60 150,60 180,40 180,120 150,100"/>
+                    <Path x:Name="z1" Visibility="Collapsed" Stroke="Black" StrokeThickness="1" Data="M 190,60 C 190,60 210,80 190,100"/>
+                    <Path x:Name="z2" Visibility="Collapsed" Stroke="Black" StrokeThickness="1" Data="M 195,55 C 195,55 220,80 195,105"/>
+                    <Path x:Name="z3" Visibility="Collapsed" Stroke="Black" StrokeThickness="1" Data="M 200,50 C 200,50 230,80 200,110"/>
+                </Grid>
+            </Border>
+            <Button Click="Button_Click" Tag="ON" Margin="10,0,0,5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="ON" Height="30" Width="70"/>
+            <Button Click="Button_Click" Tag="OFF" Margin="0,0,10,5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="OFF" Height="30" Width="70"/>
+            <Label x:Name="lbl_speakerstatus" Foreground="Black" FontWeight="SemiBold" HorizontalAlignment="Center" Content="Loa đang tắt !"/>
+        </Grid>
+
+        <Border Grid.Column="1" BorderBrush="#999999" BorderThickness="1,1,1,1">
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="RadioButton">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
+                                <Setter Property="Background" Value="Lime"/>
+                                <!--<Setter Property="Foreground" Value="Lime"/>-->
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False">
+                                <Setter Property="Background" Value="White"/>
+                                <!--<Setter Property="Foreground" Value="Black"/>-->
+                                <Setter Property="FontWeight" Value="Normal"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Resources>
+
+                
+                <Label Content="ĐÁNH GIÁ CHẤT LƯỢNG CỦA LOA CẢNH BÁO:" BorderBrush="#999999" FontWeight="SemiBold"/>
+                <RadioButton Height="30" x:Name="th_1" Margin="20,10,0,0" Content="Loa có kêu"/>
+                <RadioButton Height="30" x:Name="th_2" Margin="20,10,0,0" Content="Loa không kêu"/>
+
+                <Button Click="Button_Click" Tag="OK" Margin="20,20,0,0" Width="120" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="SemiBold" Content="XÁC NHẬN"/>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>
