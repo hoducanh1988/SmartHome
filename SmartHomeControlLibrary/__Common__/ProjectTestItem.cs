@@ -977,6 +977,111 @@ namespace SmartHomeControlLibrary.__Common__ {
         /// <param name="limit_accuracy"></param>
         /// <param name="retrytime"></param>
         /// <returns></returns>
+        public static bool Is_Sensor_Valid_D<T>(T testinfo, string dut_id, DeviceType dut_type, SensorType sensor, string limit_value, string limit_accuracy, int retrytime, int delay) where T : class, new() {
+            bool r = false;
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            string sensor_name = "";
+            int sensor_value = (int)sensor;
+            if (sensor_value == 2) {
+                switch (dut_type) {
+                    case DeviceType.SMH_CO: { sensor_name = "CO"; break; }
+                    case DeviceType.SMH_GAS: { sensor_name = "GAS"; break; }
+                    case DeviceType.SMH_SMOKE: { sensor_name = "SMOKE"; break; }
+                }
+            }
+            else sensor_name = sensor.ToString().ToUpper();
+
+            LogSystem += string.Format("\r\n+++ KIỂM TRA ĐỘ CHÍNH XÁC CỦA CẢM BIẾN {0} +++\r\n", sensor_name);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check DUT connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: sản phẩm chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("sản phẩm chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+            //get sensor value
+            string cmd = string.Format("CHECK,{0},{1},Readsensor!", dut_id, dut_type.ToString().ToUpper());
+            string feedback_data = "";
+            int count = 0;
+            int idx = (int)sensor + 3;
+            double up_value = double.Parse(limit_value) + double.Parse(limit_accuracy);
+            double lw_value = double.Parse(limit_value) - double.Parse(limit_accuracy);
+            double se_value = 0.0;
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới sản phẩm: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ sản phẩm: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ sản phầm là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ sản phầm \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
+            }
+            catch { se_value = double.MaxValue; }
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", se_value);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0} ~ {1}\r\n", lw_value, up_value);
+            //validate sensor value
+            r = (se_value >= lw_value) && (se_value <= up_value);
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: giá trị cảm biến nằm ngoài dải tiêu chuẩn\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("giá trị cảm biến nằm ngoài dải tiêu chuẩn.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: KIEM TRA TINH CHINH XAC CUA CAM BIEN ///
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: TRUE = passed, FAIL = failed
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="sensor"></param>
+        /// <param name="limit_value"></param>
+        /// <param name="limit_accuracy"></param>
+        /// <param name="retrytime"></param>
+        /// <returns></returns>
         public static bool Is_Sensor_Valid<T>(T testinfo, string dut_id, DeviceType dut_type, SensorType sensor, string limit_value, string limit_accuracy, int retrytime, out double ss_value) where T : class, new() {
             bool r = false;
             ss_value = double.MaxValue;
@@ -1046,6 +1151,121 @@ namespace SmartHomeControlLibrary.__Common__ {
                 }
                 else se_value = -999;
                     //se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
+            }
+            catch { se_value = -999; }
+            //catch { se_value = double.MaxValue; }
+            ss_value = se_value;
+
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", se_value);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0} ~ {1}\r\n", lw_value, up_value);
+            //validate sensor value
+            r = (se_value >= lw_value) && (se_value <= up_value);
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: giá trị cảm biến nằm ngoài dải tiêu chuẩn\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("giá trị cảm biến nằm ngoài dải tiêu chuẩn.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: KIEM TRA TINH CHINH XAC CUA CAM BIEN ///
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: TRUE = passed, FAIL = failed
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="sensor"></param>
+        /// <param name="limit_value"></param>
+        /// <param name="limit_accuracy"></param>
+        /// <param name="retrytime"></param>
+        /// <returns></returns>
+        public static bool Is_Sensor_Valid_D<T>(T testinfo, string dut_id, DeviceType dut_type, SensorType sensor, string limit_value, string limit_accuracy, int retrytime, int delay, out double ss_value) where T : class, new() {
+            bool r = false;
+            ss_value = double.MaxValue;
+
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            string sensor_name = "";
+            int sensor_value = (int)sensor;
+            if (sensor_value == 2) {
+                switch (dut_type) {
+                    case DeviceType.SMH_CO: { sensor_name = "CO"; break; }
+                    case DeviceType.SMH_GAS: { sensor_name = "GAS"; break; }
+                    case DeviceType.SMH_SMOKE: { sensor_name = "SMOKE"; break; }
+                }
+            }
+            else sensor_name = sensor.ToString().ToUpper();
+
+            LogSystem += string.Format("\r\n+++ KIỂM TRA ĐỘ CHÍNH XÁC CỦA CẢM BIẾN {0} +++\r\n", sensor_name);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check DUT connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: sản phẩm chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("sản phẩm chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+            //get sensor value
+            string cmd = string.Format("CHECK,{0},{1},Readsensor!", dut_id, dut_type.ToString().ToUpper());
+            string feedback_data = "";
+            int count = 0;
+            int idx = (int)sensor + 3;
+            double up_value = double.Parse(limit_value) + double.Parse(limit_accuracy);
+            double lw_value = double.Parse(limit_value) - double.Parse(limit_accuracy);
+            //double se_value = 0.0;
+            double se_value = -999;
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới sản phẩm: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ sản phẩm: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ sản phầm là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ sản phầm \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                if (feedback_data.ToLower().Contains(dut_id.ToLower())) {
+                    se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
+                }
+                else se_value = -999;
+                //se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
             }
             catch { se_value = -999; }
             //catch { se_value = double.MaxValue; }
@@ -1192,6 +1412,78 @@ namespace SmartHomeControlLibrary.__Common__ {
             count++;
             msg += string.Format("Gửi lệnh đọc giá trị cảm biến ppm [{0}]: {1}\r\n", count, cmd);
             feedback_data = DUT.QueryData_S(dut_id, cmd, 1000);
+            msg += string.Format("Dữ liệu phản hồi [{0}]: {1}\r\n", count, feedback_data);
+            //check data format
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                if (count < retrytime) goto REP_SEND;
+                else goto END;
+            }
+            //check sensor value
+            string[] s = feedback_data.Split('!');
+            feedback_data = feedback_data.Split('!')[s.Length - 2];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                if (feedback_data.ToLower().Contains(dut_id.ToLower())) {
+                    se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
+                }
+                else se_value = -999;
+            }
+            catch { se_value = -999; }
+            msg += string.Format("Giá trị cảm biến ppm [{0}]: {1}\r\n", count, se_value);
+
+            if (se_value == -999) {
+                if (count < retrytime) goto REP_SEND;
+                else goto END;
+            }
+
+        END:
+            //return value
+            return se_value;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: LAY GIA TRI CAM BIEN CO, GAS, SMOKE///
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: value is double (value = double.MaxValue error)
+        /// </summary>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="sensor"></param>
+        /// <returns></returns>
+        public static double Get_Sensor_Value_D(string dut_id, DeviceType dut_type, SensorType sensor, int retrytime, int delay, out string msg) {
+            double se_value = -999;
+            string sensor_name = "";
+            bool r = false;
+            msg = "";
+
+
+            int sensor_value = (int)sensor;
+            if (sensor_value == 2) {
+                switch (dut_type) {
+                    case DeviceType.SMH_CO: { sensor_name = "CO"; break; }
+                    case DeviceType.SMH_GAS: { sensor_name = "GAS"; break; }
+                    case DeviceType.SMH_SMOKE: { sensor_name = "SMOKE"; break; }
+                }
+            }
+            else sensor_name = sensor.ToString().ToUpper();
+
+            //check DUT connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                goto END;
+            }
+
+            //get sensor value
+            string cmd = string.Format("CHECK,{0},{1},Readsensor!", dut_id, dut_type.ToString().ToUpper());
+            string feedback_data = "";
+            int count = 0;
+            int idx = (int)sensor + 3;
+
+        REP_SEND:
+            count++;
+            msg += string.Format("Gửi lệnh đọc giá trị cảm biến ppm [{0}]: {1}\r\n", count, cmd);
+            feedback_data = DUT.QueryData_S(dut_id, cmd, delay);
             msg += string.Format("Dữ liệu phản hồi [{0}]: {1}\r\n", count, feedback_data);
             //check data format
             r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");

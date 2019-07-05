@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="SmartHomeControlLibrary.GASDETECTOR.PCBAFUNCTION.MANUAL"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartHomeControlLibrary.GASDETECTOR.PCBAFUNCTION"
+             mc:Ignorable="d" 
+             d:DesignHeight="595" d:DesignWidth="985" Background="White">
+
+    <Border BorderBrush="#999999" BorderThickness="1,1,1,1">
+        <Grid Margin="5">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="120"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="5,10,0,0">
+                <WrapPanel>
+                    <Label Width="125" Content="Input Product ID : "/>
+                    <TextBox Height="30" FontSize="13" FontWeight="SemiBold" Width="400" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <WrapPanel Margin="0,5,0,0">
+                    <Label Width="125" Content="Commands : "/>
+                    <ComboBox x:Name="cbbCommands" IsEditable="True" Height="30" FontSize="13" FontWeight="SemiBold" Width="400" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                </WrapPanel>
+                <Button HorizontalAlignment="Left" Content="Query Data" Height="30" Width="100" Margin="125,5,0,0"/>
+            </StackPanel>
+
+            <ScrollViewer Margin="0,0,0,0" Grid.Row="1" x:Name="Scr_ManualLog">
+                <RichTextBox IsReadOnly="True" Margin="0,0,1,2" Padding="5,5,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="{Binding Path=LogManual, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+            </ScrollViewer>
+            
+        </Grid>
+        
+    </Border>
+
+</UserControl>

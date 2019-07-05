@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using SmartHomeControlLibrary.__Common__;
 
 namespace SmartHomeControlLibrary.__Window__ {
+
+
     /// <summary>
     /// Interaction logic for SingleSpeaker.xaml
     /// </summary>
@@ -23,6 +25,7 @@ namespace SmartHomeControlLibrary.__Window__ {
         string dut_id;
         DeviceType dut_type;
         public string SpeakerResult = "";
+        Thread thr_bzz = null;
 
         public SingleSpeaker(string deviceid, DeviceType devicetype) {
             InitializeComponent();
@@ -32,15 +35,25 @@ namespace SmartHomeControlLibrary.__Window__ {
 
             string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", this.dut_id, this.dut_type.ToString().ToUpper());
             if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-                ProjectTestItem.DUT.WriteLine(cmd);
-                Thread.Sleep(100);
+
+                if (thr_bzz != null) thr_bzz.Abort();
+                thr_bzz = new Thread(new ThreadStart(() => {
+                    ProjectTestItem.DUT.WriteLine(cmd);
+                    ProjectTestItem.DUT.WriteLine(cmd);
+                    ProjectTestItem.DUT.WriteLine(cmd);
+                    Thread.Sleep(250);
+                }));
+                thr_bzz.IsBackground = true;
+                thr_bzz.Start();
             }
         }
+
 
         private void Button_Click(object sender, RoutedEventArgs e) {
             Button b = sender as Button;
             string tag = b.Tag.ToString();
             switch (tag) {
+
                 case "ON": {
                         this.z1.Visibility = Visibility.Visible;
                         this.z2.Visibility = Visibility.Visible;
@@ -50,11 +63,21 @@ namespace SmartHomeControlLibrary.__Window__ {
                         this.pg_Speaker.Fill = Brushes.Lime;
                         string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_On!", this.dut_id, this.dut_type.ToString().ToUpper());
                         if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-                            ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
+
+                            if (thr_bzz != null) thr_bzz.Abort();
+                            thr_bzz = new Thread(new ThreadStart(() => {
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                Thread.Sleep(250);
+                            }));
+                            thr_bzz.IsBackground = true;
+                            thr_bzz.Start();
+
                         }
                         break;
                     }
+
                 case "OFF": {
                         this.z1.Visibility = Visibility.Collapsed;
                         this.z2.Visibility = Visibility.Collapsed;
@@ -64,12 +87,20 @@ namespace SmartHomeControlLibrary.__Window__ {
                         this.pg_Speaker.Fill = Brushes.White;
                         string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", this.dut_id, this.dut_type.ToString().ToUpper());
                         if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-                            ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
-                        }
 
+                            if (thr_bzz != null) thr_bzz.Abort();
+                            thr_bzz = new Thread(new ThreadStart(() => {
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                Thread.Sleep(250);
+                            }));
+                            thr_bzz.IsBackground = true;
+                            thr_bzz.Start();
+                        }
                         break;
                     }
+
                 case "OK": {
                         if (th_1.IsChecked == false && th_2.IsChecked == false) {
                             MessageBox.Show("Vui chọn lòng đánh giá loa.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -80,8 +111,16 @@ namespace SmartHomeControlLibrary.__Window__ {
 
                         string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", this.dut_id, this.dut_type.ToString().ToUpper());
                         if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-                            ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
+
+                            if (thr_bzz != null) thr_bzz.Abort();
+                            thr_bzz = new Thread(new ThreadStart(() => {
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                ProjectTestItem.DUT.WriteLine(cmd);
+                                Thread.Sleep(250);
+                            }));
+                            thr_bzz.IsBackground = true;
+                            thr_bzz.Start();
                         }
 
                         this.Close();

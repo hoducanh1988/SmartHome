@@ -33,6 +33,9 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             //binding data
             this.DataContext = myGlobal.mySetting;
 
+            //
+            this.cbbstoptest.ItemsSource = new List<string>() { "Yes", "No" };
+
         }
 
         private void FrameWorkElement_Focus(object sender, RoutedEventArgs e) {
@@ -107,11 +110,6 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             this.DUTParity = "None";
             this.DUTStopBits = "1";
 
-            this.SqlServerName = "TEST-PC";
-            this.SqlDatabase = "SMARTHOME";
-            this.SqlUser = "sa";
-            this.SqlPassword = "123";
-
             this.MSAccessFile = "ID_LABELPRINT.accdb";
 
             this.TemperatureValue = "0";
@@ -131,6 +129,11 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             this.IsStorageInfoToSql = false;
             this.IsPrintLabel = true;
             this.IsSwitchFirmwareMode = false;
+
+            this.StopTest = "Yes";
+            this.CommonRetry = 5;
+            this.GetIDRetry = 1;
+            this.DelayRetry = 3000;
         }
 
         //CÀI ĐẶT MODULE ZIGBEE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,41 +183,6 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             set {
                 _stopbit = value;
                 OnPropertyChanged(nameof(DUTStopBits));
-            }
-        }
-
-
-        //CÀI ĐẶT SQL SERVER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        string _servername;
-        public string SqlServerName {
-            get { return _servername; }
-            set {
-                _servername = value;
-                OnPropertyChanged(nameof(SqlServerName));
-            }
-        }
-        string _database;
-        public string SqlDatabase {
-            get { return _database; }
-            set {
-                _database = value;
-                OnPropertyChanged(nameof(SqlDatabase));
-            }
-        }
-        string _userid;
-        public string SqlUser {
-            get { return _userid; }
-            set {
-                _userid = value;
-                OnPropertyChanged(nameof(SqlUser));
-            }
-        }
-        string _password;
-        public string SqlPassword {
-            get { return _password; }
-            set {
-                _password = value;
-                OnPropertyChanged(nameof(SqlPassword));
             }
         }
 
@@ -367,6 +335,41 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 _isswitchfirmwaremode = value;
                 myGlobal.myTesting.IsSwitchFirmwareMode = value;
                 OnPropertyChanged(nameof(IsSwitchFirmwareMode));
+            }
+        }
+
+
+        //CÀI ĐẶT CHẾ ĐỘ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        string _stoptest;
+        public string StopTest {
+            get { return _stoptest; }
+            set {
+                _stoptest = value;
+                OnPropertyChanged(nameof(StopTest));
+            }
+        }
+        int _commomretry;
+        public int CommonRetry {
+            get { return _commomretry; }
+            set {
+                _commomretry = value <= 0 ? 1 : value;
+                OnPropertyChanged(nameof(CommonRetry));
+            }
+        }
+        int _getidretry;
+        public int GetIDRetry {
+            get { return _getidretry; }
+            set {
+                _getidretry = value <= 0 ? 1 : value;
+                OnPropertyChanged(nameof(GetIDRetry));
+            }
+        }
+        int _delayretry;
+        public int DelayRetry {
+            get { return _delayretry; }
+            set {
+                _delayretry = value < 0 ? 0 : value;
+                OnPropertyChanged(nameof(DelayRetry));
             }
         }
     }

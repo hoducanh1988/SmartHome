@@ -75,6 +75,8 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
             st.Start();
 
             bool r = false;
+            int idretry = myGlobal.mySetting.GetIDRetry;
+            int comretry = myGlobal.mySetting.CommonRetry;
 
             //release device under test
             if (ProjectTestItem.DUT != null) ProjectTestItem.DUT = null;
@@ -89,7 +91,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateConnection = "Failed";
                         goto END;
@@ -97,7 +99,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
                 }
                 //check connection between DUT (module zigbee) vs usb dongle
                 string id = "";
-                r = ProjectTestItem.Is_Module_ZigBee_Join_To_Network<TestingInformation>(myGlobal.myTesting, 10, 1, out id);
+                r = ProjectTestItem.Is_Module_ZigBee_Join_To_Network_D<TestingInformation>(myGlobal.myTesting, comretry, idretry, myGlobal.mySetting.DelayRetry, out id);
                 myGlobal.myTesting.ValidateConnection = r == true ? "Passed" : "Failed";
                 myGlobal.myTesting.ID = id;
                 if (!r) goto END;
@@ -109,7 +111,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateTransmission = "Failed";
                         goto END;
@@ -117,7 +119,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
                 }
                 //check data transmission between DUT (module zigbee) vs usb dongle
                 string cmd = string.Format("CHECK,{0},SMH_ZIGBEE,RF!", myGlobal.myTesting.ID);
-                r = ProjectTestItem.Is_DUT_Transmitted_To_Node_RF<TestingInformation>(myGlobal.myTesting, 10, cmd);
+                r = ProjectTestItem.Is_DUT_Transmitted_To_Node_RF_D<TestingInformation>(myGlobal.myTesting, comretry, myGlobal.mySetting.DelayRetry, cmd);
                 myGlobal.myTesting.ValidateTransmission = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -128,14 +130,14 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateTemperature = "Failed";
                         goto END;
                     }
                 }
                 //check temperature sensor
-                r = ProjectTestItem.Is_Sensor_Valid<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_CO, SensorType.Temperature, myGlobal.mySetting.TemperatureValue, myGlobal.mySetting.TemperatureAccuracy, 10);
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_CO, SensorType.Temperature, myGlobal.mySetting.TemperatureValue, myGlobal.mySetting.TemperatureAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateTemperature = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -146,14 +148,14 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateHumidity = "Failed";
                         goto END;
                     }
                 }
-                //check temperature sensor
-                r = ProjectTestItem.Is_Sensor_Valid<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_CO, SensorType.Humidity, myGlobal.mySetting.HumidityValue, myGlobal.mySetting.HumidityAccuracy, 10);
+                //check humidity sensor
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_CO, SensorType.Humidity, myGlobal.mySetting.HumidityValue, myGlobal.mySetting.HumidityAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateHumidity = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -164,14 +166,14 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateCoSensor = "Failed";
                         goto END;
                     }
                 }
-                //check temperature sensor
-                r = ProjectTestItem.Is_Sensor_Valid<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_CO, SensorType.CO, myGlobal.mySetting.CoValue, myGlobal.mySetting.CoAccuracy, 10);
+                //check CO sensor
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_CO, SensorType.CO, myGlobal.mySetting.CoValue, myGlobal.mySetting.CoAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateCoSensor = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -182,7 +184,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateLED = "Failed";
                         goto END;
@@ -216,7 +218,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateSpeaker = "Failed";
                         goto END;
@@ -243,37 +245,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
                 if (!r) { goto END; }
             }
 
-            //8 - Save device info (id,type) to sql server
-            if (myGlobal.myTesting.IsStorageInfoToSql) {
-                myGlobal.myTesting.SaveInfoToSql = "Waiting...";
-
-                myGlobal.myTesting.LogSystem += string.Format("\r\n+++ LƯU THÔNG TIN CỦA THIẾT BỊ (ID,TYPE) LÊN SQL SERVER +++\r\n");
-
-                //check id valid or not
-                r =! string.IsNullOrEmpty(myGlobal.myTesting.ID);
-                if (!r) {
-                    myGlobal.myTesting.SaveInfoToSql = "Failed";
-                    myGlobal.myTesting.LogSystem += ".........Kết quả: Failed\r\n";
-                    myGlobal.myTesting.LogSystem += string.Format(".........Thông tin lỗi: ID thiết bị \"{0}\" không đúng định dạng.\r\n", myGlobal.myTesting.ID);
-                    goto END;
-                }
-                //save device info to sql server
-                string table_name = "ProductManagement";
-                var sqlServer = new ProjectSqlServer(myGlobal.mySetting.SqlServerName, myGlobal.mySetting.SqlDatabase, myGlobal.mySetting.SqlUser, myGlobal.mySetting.SqlPassword);
-                TableProductManagement deviceinfo = new TableProductManagement() { DeviceID = myGlobal.myTesting.ID, DeviceType = DeviceType.SMH_CO.ToString().ToUpper() };
-                r = sqlServer.Insert_NewRow_To_SqlTable<TableProductManagement>(table_name, deviceinfo, "tb_ID");
-                if (!r) {
-                    myGlobal.myTesting.SaveInfoToSql = "Failed";
-                    myGlobal.myTesting.LogSystem += ".........Kết quả: Failed\r\n";
-                    myGlobal.myTesting.LogSystem += ".........Thông tin lỗi: không thể ghi thông tin thiết bị lên sql server.\r\n";
-                    goto END;
-                }
-
-                myGlobal.myTesting.SaveInfoToSql = "Passed";
-                myGlobal.myTesting.LogSystem += ".........Kết quả: Passed\r\n";
-            }
-
-            //9 - Print the product id label
+            //8 - Print the product id label
             if (myGlobal.myTesting.IsPrintLabel) {
                 myGlobal.myTesting.PrintLabel = "Waiting...";
 
@@ -326,7 +298,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
 
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, 10);
+                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.SwitchFirmwareMode = "Failed";
                         goto END;

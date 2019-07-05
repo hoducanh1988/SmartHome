@@ -27,7 +27,8 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
 
         public TestingInformation myTesting = null;
         dynamic settinginfo = null;
-
+        int commonRetry = 0;
+        int delayRetry = 0;
 
         //constructor
         public ucFinal () {
@@ -64,6 +65,10 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
             this.myTesting.PPMAccuracy = (string)settinginfo.GetType().GetProperty("PPMAccuracy").GetValue(settinginfo, null);
             this.myTesting.FirmwareModeValue = "111";
 
+            //get retry and delay
+            commonRetry = (int)settinginfo.GetType().GetProperty("CommonRetry").GetValue(settinginfo, null);
+            delayRetry = (int)settinginfo.GetType().GetProperty("DelayRetry").GetValue(settinginfo, null);
+
             this.DataContext = this.myTesting;
         }
 
@@ -78,7 +83,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
 
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidateTemperature = "Failed";
                                 return;
@@ -86,7 +91,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         }
                         //check temperature sensor
                         double sensor_value = 0;
-                        r = ProjectTestItem.Is_Sensor_Valid<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, SensorType.Temperature, myTesting.TemperatureValue, myTesting.TemperatureAccuracy, 10, out sensor_value);
+                        r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, SensorType.Temperature, myTesting.TemperatureValue, myTesting.TemperatureAccuracy, commonRetry, delayRetry, out sensor_value);
                         myTesting.TemperatureActual = sensor_value.ToString();
                         myTesting.ValidateTemperature = r == true ? "Passed" : "Failed";
                         break;
@@ -96,7 +101,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
 
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidateHumidity = "Failed";
                                 return;
@@ -104,7 +109,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         }
                         //check humidity sensor
                         double sensor_value = 0;
-                        r = ProjectTestItem.Is_Sensor_Valid<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, SensorType.Humidity, myTesting.HumidityValue, myTesting.HumidityAccuracy, 10, out sensor_value);
+                        r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, SensorType.Humidity, myTesting.HumidityValue, myTesting.HumidityAccuracy, commonRetry, delayRetry, out sensor_value);
                         myTesting.HumidityActual = sensor_value.ToString();
                         myTesting.ValidateHumidity = r == true ? "Passed" : "Failed";
                         break;
@@ -114,7 +119,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
 
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidatePPM = "Failed";
                                 return;
@@ -137,7 +142,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                                 }
                         }
                         
-                        r = ProjectTestItem.Is_Sensor_Valid<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, sensor, myTesting.PPMValue, myTesting.PPMAccuracy, 10);
+                        r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, sensor, myTesting.PPMValue, myTesting.PPMAccuracy, commonRetry, delayRetry);
                         myTesting.ValidatePPM = r == true ? "Passed" : "Failed";
                         break;
                     }
@@ -146,21 +151,21 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
 
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.SwitchFirmwareMode = "Failed";
                                 return;
                             }
                         }
                         //switch firmware to user mode
-                        r = ProjectTestItem.Switch_Firmware_To_User_Mode<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, myTesting.FirmwareModeValue, 10);
+                        r = ProjectTestItem.Switch_Firmware_To_User_Mode<TestingInformation>(myTesting, myTesting.FID, myTesting.FdeviceType, myTesting.FirmwareModeValue, commonRetry);
                         myTesting.SwitchFirmwareMode = r == true ? "Passed" : "Failed";
                         break;
                     }
                 case "led_on": {
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidateLED = "Failed";
                                 return;
@@ -168,7 +173,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         }
                         //set led on
                         try {
-                            string cmd = string.Format("CHECK,{0},{1},Test_Led_On!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
+                            string cmd = string.Format("CHECK,{0},{1},Led_Green_On!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
                             ProjectTestItem.DUT.WriteLine(cmd);
                             Thread.Sleep(100);
                             this.cbb_LED.IsEnabled = true;
@@ -178,7 +183,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                 case "led_off": {
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidateLED = "Failed";
                                 return;
@@ -186,7 +191,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         }
                         //set led off
                         try {
-                            string cmd = string.Format("CHECK,{0},{1},Test_Led_Off!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
+                            string cmd = string.Format("CHECK,{0},{1},Led_Red_On!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
                             ProjectTestItem.DUT.WriteLine(cmd);
                             Thread.Sleep(100);
                         }
@@ -196,7 +201,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                 case "speaker_on": {
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidateSpeaker = "Failed";
                                 return;
@@ -215,7 +220,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                 case "speaker_off": {
                         //check connection between DUT (usb dongle) vs PC
                         if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, 10);
+                            r = ProjectTestItem.Open_Device_USB_Dongle(myTesting, settinginfo, commonRetry);
                             if (!r) {
                                 myTesting.ValidateSpeaker = "Failed";
                                 return;

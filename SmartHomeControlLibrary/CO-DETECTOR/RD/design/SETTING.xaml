@@ -165,6 +165,19 @@
                              Text="{Binding Path=SerialStopBits, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     </Grid>
 
+                    <!--CÀI ĐẶT CHẾ ĐỘ TEST-->
+                    <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT CHẾ ĐỘ TEST"/>
+                    <Grid>
+                        <Label Content="Số lần retry khi test item"/>
+                        <TextBox Tag="commonretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=CommonRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Label Content="Thời gian delay giữa các lần retry (ms)"/>
+                        <TextBox Tag="delayretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=DelayRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+
 
                     <!--CÀI ĐẶT KIỂM TRA ĐIỂM KHÔNG-->
                     <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT KIỂM TRA ĐIỂM KHÔNG"/>

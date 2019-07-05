@@ -200,30 +200,6 @@
                         </Border>
                     </Grid>
 
-                    <!--CÀI ĐẶT SQL SERVER-->
-                    <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT SQL SERVER"/>
-                    <Grid IsEnabled="False">
-                        <Label Content="Tên SQL Server"/>
-                        <TextBox Tag="sqlservername" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlServerName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-                    <Grid IsEnabled="False">
-                        <Label Content="SQL Database"/>
-                        <TextBox Tag="sqldatabase" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlDatabase, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-                    <Grid IsEnabled="False">
-                        <Label Content="SQL User"/>
-                        <TextBox Tag="sqluser" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-                    <Grid IsEnabled="False">
-                        <Label Content="SQL Password"/>
-                        <TextBox Tag="sqlpassword" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-
-
                     <!--CÀI ĐẶT IN TEM ID-->
                     <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT IN TEM ID"/>
                     <Grid IsEnabled="False">
@@ -261,9 +237,6 @@
                                       IsChecked="{Binding Path=IsCheckLED, UpdateSourceTrigger=PropertyChanged}"/>
                                 <CheckBox Margin="10,5,0,0" Content="Test còi báo động"
                                       IsChecked="{Binding Path=IsCheckSpeaker, UpdateSourceTrigger=PropertyChanged}"/>
-                                <CheckBox Margin="10,5,0,0" Content="Lưu thông tin sản phẩm lên SQL server"
-                                      IsChecked="{Binding Path=IsStorageInfoToSql, UpdateSourceTrigger=PropertyChanged}"
-                                          IsEnabled="False"/>
                                 <CheckBox Margin="10,5,0,0" Content="In tem ID"
                                       IsChecked="{Binding Path=IsPrintLabel, UpdateSourceTrigger=PropertyChanged}"/>
                                 <CheckBox Margin="10,5,0,0" Content="Chuyển firmware sang mode thương mại"
@@ -272,6 +245,30 @@
                             </StackPanel>
                         </Border>
 
+                    </Grid>
+
+
+                    <!--CÀI ĐẶT CHẾ ĐỘ TEST-->
+                    <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT CHẾ ĐỘ TEST"/>
+                    <Grid>
+                        <Label Content="Kết thúc test sản phẩm khi gặp lỗi"/>
+                        <ComboBox x:Name="cbbstoptest" Tag="stoptest" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=StopTest, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Label Content="Số lần retry khi đọc ID sản phẩm"/>
+                        <TextBox Tag="getidretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=GetIDRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Label Content="Số lần retry khi test item"/>
+                        <TextBox Tag="commonretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=CommonRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Label Content="Thời gian delay giữa các lần retry (ms)"/>
+                        <TextBox Tag="delayretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=DelayRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     </Grid>
 
                     <TextBlock Margin="0,0,0,30"/>

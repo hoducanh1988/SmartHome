@@ -41,7 +41,7 @@
                     <Style TargetType="Label">
                         <Setter Property="FontSize" Value="13"/>
                         <Setter Property="Margin" Value="0,0,0,0"/>
-                        <Setter Property="Width" Value="200"/>
+                        <Setter Property="Width" Value="250"/>
                         <Setter Property="BorderBrush" Value="#777777"/>
                         <Setter Property="BorderThickness" Value="1,0,1,1"/>
                         <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -57,7 +57,7 @@
                         <Setter Property="BorderBrush" Value="#777777"/>
                         <Setter Property="BorderThickness" Value="0,0,1,1"/>
                         <Setter Property="Height" Value="25"/>
-                        <Setter Property="Margin" Value="200,0,0,0"/>
+                        <Setter Property="Margin" Value="250,0,0,0"/>
                         <Setter Property="Padding" Value="5,0,0,0"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -78,7 +78,7 @@
                         <Setter Property="BorderBrush" Value="#777777"/>
                         <Setter Property="BorderThickness" Value="0,0,1,1"/>
                         <Setter Property="Height" Value="25"/>
-                        <Setter Property="Margin" Value="200,0,0,0"/>
+                        <Setter Property="Margin" Value="250,0,0,0"/>
                         <Setter Property="Padding" Value="5,0,0,0"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -99,7 +99,7 @@
 
                     <!--Border-->
                     <Style TargetType="Border">
-                        <Setter Property="Margin" Value="200,0,0,0"/>
+                        <Setter Property="Margin" Value="250,0,0,0"/>
                         <Setter Property="BorderBrush" Value="#777777"/>
                         <Setter Property="BorderThickness" Value="0,0,1,1"/>
                     </Style>
@@ -199,35 +199,13 @@
                             </WrapPanel>
                         </Border>
                     </Grid>
-
-                    <!--CÀI ĐẶT SQL SERVER-->
-                    <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT SQL SERVER"/>
-                    <Grid IsEnabled="False">
-                        <Label Content="Tên SQL Server"/>
-                        <TextBox Tag="sqlservername" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlServerName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-                    <Grid IsEnabled="False">
-                        <Label Content="SQL Database"/>
-                        <TextBox Tag="sqldatabase" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlDatabase, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-                    <Grid IsEnabled="False">
-                        <Label Content="SQL User"/>
-                        <TextBox Tag="sqluser" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlUser, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
-                    <Grid IsEnabled="False">
-                        <Label Content="SQL Password"/>
-                        <TextBox Tag="sqlpassword" GotFocus="FrameWorkElement_Focus"
-                        Text="{Binding Path=SqlPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    </Grid>
+                    
 
                     <!--CÀI ĐẶT BÀI TEST-->
                     <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT BÀI TEST"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="250"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -249,8 +227,27 @@
                                       IsChecked="{Binding Path=IsSwitchFirmwareMode, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Border>
-
                     </Grid>
+
+
+                    <!--CÀI ĐẶT CHẾ ĐỘ TEST-->
+                    <Label Style="{StaticResource label_style}" Content="# CÀI ĐẶT CHẾ ĐỘ TEST"/>
+                    <Grid>
+                        <Label Content="Kết thúc test sản phẩm khi gặp lỗi"/>
+                        <ComboBox x:Name="cbbstoptest" Tag="stoptest" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=StopTest, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Label Content="Số lần retry khi test item"/>
+                        <TextBox Tag="commonretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=CommonRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Label Content="Thời gian delay giữa các lần retry (ms)"/>
+                        <TextBox Tag="delayretry" GotFocus="FrameWorkElement_Focus"
+                        Text="{Binding Path=DelayRetry, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+                    
 
                     <TextBlock Margin="0,0,0,30"/>
                 </StackPanel>

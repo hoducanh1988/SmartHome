@@ -146,6 +146,9 @@
     <Compile Include="GAS-DETECTOR\PCBA\design\LOG.xaml.cs">
       <DependentUpon>LOG.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GAS-DETECTOR\PCBA\design\MANUAL.xaml.cs">
+      <DependentUpon>MANUAL.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GAS-DETECTOR\PCBA\design\RUNALL.xaml.cs">
       <DependentUpon>RUNALL.xaml</DependentUpon>
     </Compile>
@@ -449,6 +452,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GAS-DETECTOR\PCBA\design\LOG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\PCBA\design\MANUAL.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

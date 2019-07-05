@@ -298,13 +298,17 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
         //KIEM TRA DIEM KHONG - LUU LOG OK
         bool _diemkhong_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             Dispatcher.Invoke(new Action(() => { myGlobal.ObservableCollectionDiemKhong.Clear(); }));
 
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.DiemKhongSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -328,7 +332,6 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     bool r1, r2, r3;
 
                     //doc ket qua lan1
-                    //doc ket qua lan1
                     int d = 0;
                     try {
                         d = (int)(double.Parse(myGlobal.mySetting.DiemKhongThoiGian));
@@ -340,7 +343,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("Đo lần 1\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DiemKhongSystemLog += logstr;
 
                     ab = Math.Abs(v - double.Parse(myGlobal.myTesting.DiemKhongTieuChuan));
@@ -357,7 +360,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("Đo lần 2\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DiemKhongSystemLog += logstr;
 
                     ab = Math.Abs(v - double.Parse(myGlobal.myTesting.DiemKhongTieuChuan));
@@ -375,7 +378,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("Đo lần 3\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DiemKhongSystemLog += logstr;
 
                     ab = Math.Abs(v - double.Parse(myGlobal.myTesting.DiemKhongTieuChuan));
@@ -439,13 +442,17 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
         //KIEM TRA SAI SO TUONG DOI - LUU LOG OK
         bool _tuongdoi_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             Dispatcher.Invoke(new Action(() => { myGlobal.ObservableCollectionTuongDoi.Clear(); }));
 
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.TuongDoiSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -480,7 +487,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("Đo lần 1\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.TuongDoiSystemLog += logstr;
 
                     ab = ProjectUtility.TinhSaiSoTuongDoi(v, double.Parse(myGlobal.mySetting.TuongDoiTieuChuan));
@@ -498,7 +505,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("Đo lần 2\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.TuongDoiSystemLog += logstr;
 
                     ab = ProjectUtility.TinhSaiSoTuongDoi(v, double.Parse(myGlobal.mySetting.TuongDoiTieuChuan));
@@ -517,7 +524,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("Đo lần 3\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.TuongDoiSystemLog += logstr;
 
                     ab = ProjectUtility.TinhSaiSoTuongDoi(v, double.Parse(myGlobal.mySetting.TuongDoiTieuChuan));
@@ -591,13 +598,17 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
         //KIEM TRA DO LAP - LUU LOG OK
         bool _dolap_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             Dispatcher.Invoke(new Action(() => { myGlobal.ObservableCollectionDoLap.Clear(); }));
 
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.DoLapSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -632,7 +643,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 1\r\n");
-                    vs[0] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[0] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -643,7 +654,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 2\r\n");
-                    vs[1] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[1] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -654,7 +665,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 3\r\n");
-                    vs[2] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[2] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -665,7 +676,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 4\r\n");
-                    vs[3] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[3] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -676,7 +687,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 5\r\n");
-                    vs[4] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[4] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -687,7 +698,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 6\r\n");
-                    vs[5] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[5] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -699,7 +710,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 7\r\n");
-                    vs[6] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[6] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -710,7 +721,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 8\r\n");
-                    vs[7] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[7] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -721,7 +732,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 9\r\n");
-                    vs[8] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[8] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -732,7 +743,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 10\r\n");
-                    vs[9] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                    vs[9] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -798,6 +809,10 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
         int[] step_time = null;
         bool _dotroi_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             if (step_time == null || step_time[0] > 3) {
                 step_time = new int[myGlobal.ObservableCollectionProductID.Count];
@@ -813,7 +828,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.DoTroiSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -846,7 +861,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     //step 1 - kiem tra lan 1
                     if (step_time[i] == 1) {
                         myGlobal.myTesting.DoTroiSystemLog += string.Format("Đo lần 1\r\n");
-                        v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                        v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                         myGlobal.myTesting.DoTroiSystemLog += logstr;
 
                         Dispatcher.Invoke(new Action(() => {
@@ -860,7 +875,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     //step 2 - kiem tra lan 2
                     if (step_time[i] == 2) {
                         myGlobal.myTesting.DoTroiSystemLog += string.Format("Đo lần 2\r\n");
-                        v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                        v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                         myGlobal.myTesting.DoTroiSystemLog += logstr;
 
                         Dispatcher.Invoke(new Action(() => {
@@ -874,7 +889,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.RD {
                     //step 3 - kiem tra lan 3
                     if (step_time[i] == 3) {
                         myGlobal.myTesting.DoTroiSystemLog += string.Format("Đo lần 3\r\n");
-                        v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, 3, out logstr);
+                        v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_GAS, SensorType.GAS, commonretry, delayretry, out logstr);
                         myGlobal.myTesting.DoTroiSystemLog += logstr;
 
                         Dispatcher.Invoke(new Action(() => {

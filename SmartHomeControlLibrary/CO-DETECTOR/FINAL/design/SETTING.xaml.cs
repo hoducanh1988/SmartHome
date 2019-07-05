@@ -33,6 +33,8 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.FINALFUNCTION {
             //binding data
             this.DataContext = myGlobal.mySetting;
 
+            //
+            this.cbbstoptest.ItemsSource = new List<string>() { "Yes", "No" };
         }
 
         private void FrameWorkElement_Focus(object sender, RoutedEventArgs e) {
@@ -100,6 +102,10 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.FINALFUNCTION {
             this.IsCheckSpeaker = true;
             this.IsCheckTemperature = true;
             this.IsSwitchFirmwareMode = false;
+
+            this.StopTest = "Yes";
+            this.CommonRetry = 5;
+            this.DelayRetry = 3000;
         }
 
         //CÀI ĐẶT MODULE ZIGBEE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,6 +282,32 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.FINALFUNCTION {
             set {
                 _isswitchfirmwaremode = value;
                 OnPropertyChanged(nameof(IsSwitchFirmwareMode));
+            }
+        }
+
+        //CÀI ĐẶT CHẾ ĐỘ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        string _stoptest;
+        public string StopTest {
+            get { return _stoptest; }
+            set {
+                _stoptest = value;
+                OnPropertyChanged(nameof(StopTest));
+            }
+        }
+        int _commomretry;
+        public int CommonRetry {
+            get { return _commomretry; }
+            set {
+                _commomretry = value <= 0 ? 1 : value;
+                OnPropertyChanged(nameof(CommonRetry));
+            }
+        }
+        int _delayretry;
+        public int DelayRetry {
+            get { return _delayretry; }
+            set {
+                _delayretry = value < 0 ? 0 : value;
+                OnPropertyChanged(nameof(DelayRetry));
             }
         }
     }

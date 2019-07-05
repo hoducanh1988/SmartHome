@@ -20,7 +20,7 @@ using SmartHomeControlLibrary.__Common__;
 using SmartHomeControlLibrary.__Window__;
 
 namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
-    
+
     /// <summary>
     /// Interaction logic for RUNALL.xaml
     /// </summary>
@@ -70,7 +70,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     }
 
 
-                    
+
                 }
                 else {
                     MessageBox.Show(string.Format("ID {0} không đúng định dạng.\r\nVui lòng check lại.", id), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -162,7 +162,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
         void _save_product_id() {
             string f = string.Format("{0}co_rdid.dll", AppDomain.CurrentDomain.BaseDirectory);
             if (myGlobal.ObservableCollectionProductID.Count == 0) {
-                if (File.Exists(f)) File.Delete(f); 
+                if (File.Exists(f)) File.Delete(f);
                 else return;
             }
 
@@ -303,13 +303,17 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
         //KIEM TRA DIEM KHONG - LUU LOG OK
         bool _diemkhong_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             Dispatcher.Invoke(new Action(() => { myGlobal.ObservableCollectionDiemKhong.Clear(); }));
 
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.DiemKhongSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -343,7 +347,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("Đo lần 1\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DiemKhongSystemLog += logstr;
 
                     ab = Math.Abs(v - double.Parse(myGlobal.myTesting.DiemKhongTieuChuan));
@@ -360,7 +364,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("Đo lần 2\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DiemKhongSystemLog += logstr;
 
                     ab = Math.Abs(v - double.Parse(myGlobal.myTesting.DiemKhongTieuChuan));
@@ -378,7 +382,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DiemKhongSystemLog += string.Format("Đo lần 3\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DiemKhongSystemLog += logstr;
 
                     ab = Math.Abs(v - double.Parse(myGlobal.myTesting.DiemKhongTieuChuan));
@@ -433,7 +437,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                                                  DateTime.Now.ToString("yyyyMMdd"));
                         using (var sw = new StreamWriter(f, true, Encoding.Unicode)) { sw.WriteLine(myGlobal.myTesting.DiemKhongSystemLog); }
                     }));
-                    
+
                 }
             }
 
@@ -443,13 +447,16 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
         //KIEM TRA SAI SO TUONG DOI - LUU LOG OK
         bool _tuongdoi_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             Dispatcher.Invoke(new Action(() => { myGlobal.ObservableCollectionTuongDoi.Clear(); }));
 
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.TuongDoiSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -468,7 +475,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                         c = myGlobal.ObservableCollectionTuongDoi.Count - 1;
                     }));
 
-                    double v, ab, a1,a2,a3;
+                    double v, ab, a1, a2, a3;
                     string logstr;
                     bool r1, r2, r3;
 
@@ -483,7 +490,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("Đo lần 1\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.TuongDoiSystemLog += logstr;
 
                     ab = ProjectUtility.TinhSaiSoTuongDoi(v, double.Parse(myGlobal.mySetting.TuongDoiTieuChuan));
@@ -501,7 +508,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("Đo lần 2\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.TuongDoiSystemLog += logstr;
 
                     ab = ProjectUtility.TinhSaiSoTuongDoi(v, double.Parse(myGlobal.mySetting.TuongDoiTieuChuan));
@@ -520,7 +527,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.TuongDoiSystemLog += string.Format("Đo lần 3\r\n");
-                    v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.TuongDoiSystemLog += logstr;
 
                     ab = ProjectUtility.TinhSaiSoTuongDoi(v, double.Parse(myGlobal.mySetting.TuongDoiTieuChuan));
@@ -594,13 +601,17 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
         //KIEM TRA DO LAP - LUU LOG OK
         bool _dolap_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             Dispatcher.Invoke(new Action(() => { myGlobal.ObservableCollectionDoLap.Clear(); }));
 
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.DoLapSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -626,14 +637,15 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     int d = 0;
                     try {
                         d = (int)(double.Parse(myGlobal.mySetting.DoLapThoiGian));
-                    } catch { d = 0; }
+                    }
+                    catch { d = 0; }
                     d = d < 0 ? 0 : d;
-                    
+
                     //doc ket qua lan1
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 1\r\n");
-                    vs[0] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[0] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -644,7 +656,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 2\r\n");
-                    vs[1] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[1] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -655,7 +667,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 3\r\n");
-                    vs[2] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[2] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -666,7 +678,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 4\r\n");
-                    vs[3] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[3] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -677,7 +689,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 5\r\n");
-                    vs[4] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[4] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -688,7 +700,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 6\r\n");
-                    vs[5] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[5] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -700,7 +712,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 7\r\n");
-                    vs[6] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[6] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -711,7 +723,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 8\r\n");
-                    vs[7] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[7] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -722,7 +734,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 9\r\n");
-                    vs[8] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[8] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -733,7 +745,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     Thread.Sleep(d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("\r\nChờ {0} ms\r\n", d);
                     myGlobal.myTesting.DoLapSystemLog += string.Format("Đo lần 10\r\n");
-                    vs[9] = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                    vs[9] = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                     myGlobal.myTesting.DoLapSystemLog += logstr;
 
                     Dispatcher.Invoke(new Action(() => {
@@ -771,7 +783,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                                                  myGlobal.ObservableCollectionDoLap[c].KetQua
                                                  );
 
-                        ProjectUtility.WriteLogExcel_KiemTraDoLap(DeviceType.SMH_CO, dir, f, myGlobal.ObservableCollectionDoLap[c],myGlobal.mySetting, vs.Average(), s);
+                        ProjectUtility.WriteLogExcel_KiemTraDoLap(DeviceType.SMH_CO, dir, f, myGlobal.ObservableCollectionDoLap[c], myGlobal.mySetting, vs.Average(), s);
                     }));
 
 
@@ -800,6 +812,10 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
         int[] step_time = null;
         bool _dotroi_runall_() {
             bool r = false;
+            int commonretry = myGlobal.mySetting.CommonRetry;
+            int delayretry = myGlobal.mySetting.DelayRetry;
+
+
             if (myGlobal.ObservableCollectionProductID.Count == 0) return r;
             if (step_time == null || step_time[0] > 3) {
                 step_time = new int[myGlobal.ObservableCollectionProductID.Count];
@@ -815,7 +831,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
             //check connection between DUT (usb dongle) vs PC
             myGlobal.myTesting.LogSystem = "";
             if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, 10);
+                r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, commonretry);
                 myGlobal.myTesting.DoTroiSystemLog += myGlobal.myTesting.LogSystem;
                 if (!r) {
                     return r;
@@ -848,7 +864,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     //step 1 - kiem tra lan 1
                     if (step_time[i] == 1) {
                         myGlobal.myTesting.DoTroiSystemLog += string.Format("Đo lần 1\r\n");
-                        v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                        v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                         myGlobal.myTesting.DoTroiSystemLog += logstr;
 
                         Dispatcher.Invoke(new Action(() => {
@@ -862,7 +878,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     //step 2 - kiem tra lan 2
                     if (step_time[i] == 2) {
                         myGlobal.myTesting.DoTroiSystemLog += string.Format("Đo lần 2\r\n");
-                        v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                        v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                         myGlobal.myTesting.DoTroiSystemLog += logstr;
 
                         Dispatcher.Invoke(new Action(() => {
@@ -876,7 +892,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                     //step 3 - kiem tra lan 3
                     if (step_time[i] == 3) {
                         myGlobal.myTesting.DoTroiSystemLog += string.Format("Đo lần 3\r\n");
-                        v = ProjectTestItem.Get_Sensor_Value(product.ProductID, DeviceType.SMH_CO, SensorType.CO, 3, out logstr);
+                        v = ProjectTestItem.Get_Sensor_Value_D(product.ProductID, DeviceType.SMH_CO, SensorType.CO, commonretry, delayretry, out logstr);
                         myGlobal.myTesting.DoTroiSystemLog += logstr;
 
                         Dispatcher.Invoke(new Action(() => {
@@ -931,7 +947,7 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
                                                                        myGlobal.ObservableCollectionDoTroi[i].t2,
                                                                        myGlobal.ObservableCollectionDoTroi[i].t3,
                                                                        Math.Abs(v2 - v1).ToString(),
-                                                                       Math.Abs(v3 - v1).ToString() );
+                                                                       Math.Abs(v3 - v1).ToString());
 
                         }));
 

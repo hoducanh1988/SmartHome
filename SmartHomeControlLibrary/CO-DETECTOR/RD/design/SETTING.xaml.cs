@@ -79,6 +79,10 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
             this.SerialParity = "None";
             this.SerialStopBits = "1";
 
+            this.CommonRetry = 3;
+            this.DelayRetry = 3000;
+
+
             this.DiemKhongTieuChuan = "0";
             this.DiemKhongSaiSo = "0";
             this.DiemKhongThoiGian = "1000";
@@ -146,6 +150,25 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.RD {
             set {
                 _stopbit = value;
                 OnPropertyChanged(nameof(SerialStopBits));
+            }
+        }
+
+
+        //CÀI ĐẶT CHẾ ĐỘ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        int _commomretry;
+        public int CommonRetry {
+            get { return _commomretry; }
+            set {
+                _commomretry = value <= 0 ? 1 : value;
+                OnPropertyChanged(nameof(CommonRetry));
+            }
+        }
+        int _delayretry;
+        public int DelayRetry {
+            get { return _delayretry; }
+            set {
+                _delayretry = value < 0 ? 0 : value;
+                OnPropertyChanged(nameof(DelayRetry));
             }
         }
 
