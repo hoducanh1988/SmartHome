@@ -25,6 +25,19 @@ namespace SmartHomeControlLibrary.__Window__ {
 
         Thread thrd = null;
 
+        void controlLED(string command_line) {
+            //if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
+            if (thrd != null) thrd.Abort();
+            thrd = new Thread(new ThreadStart(() => {
+                ProjectTestItem.DUT.WriteLine(command_line);
+                Thread.Sleep(500);
+            }));
+            thrd.IsBackground = true;
+            thrd.Start();
+            //}
+        }
+
+
         public SingleLED(string deviceid, DeviceType devicetype) {
             InitializeComponent();
             
@@ -32,20 +45,10 @@ namespace SmartHomeControlLibrary.__Window__ {
             this.dut_type = devicetype;
 
             string cmd = string.Format("CHECK,{0},{1},Led_Off_All!", this.dut_id, this.dut_type.ToString().ToUpper());
-            if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-                if (thrd != null) thrd.Abort();
-                thrd = new Thread(new ThreadStart(() => {
-                    ProjectTestItem.DUT.WriteLine(cmd);
-                    Thread.Sleep(250);
-                    ProjectTestItem.DUT.WriteLine(cmd);
-                    Thread.Sleep(250);
-                    ProjectTestItem.DUT.WriteLine(cmd);
-                    Thread.Sleep(250);
-                }));
-                thrd.IsBackground = true;
-                thrd.Start();
-            }
+            controlLED(cmd);
         }
+
+        
 
         private void Button_Click(object sender, RoutedEventArgs e) {
             Button b = sender as Button;
@@ -55,40 +58,14 @@ namespace SmartHomeControlLibrary.__Window__ {
                         this.lbl_ledstatus.Content = "bật LED xanh !";
                         this.pg_LED.Fill = Brushes.Lime;
                         string cmd = string.Format("CHECK,{0},{1},Led_Green_On!", this.dut_id, this.dut_type.ToString().ToUpper());
-                        if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-
-                            if (thrd != null) thrd.Abort();
-                            thrd = new Thread(new ThreadStart(() => {
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                            }));
-                            thrd.IsBackground = true;
-                            thrd.Start();
-                        }
+                        controlLED(cmd);
                         break;
                     }
                 case "RED_ON": {
                         this.lbl_ledstatus.Content = "bật LED đỏ !";
                         this.pg_LED.Fill = Brushes.Red;
                         string cmd = string.Format("CHECK,{0},{1},Led_Red_On!", this.dut_id, this.dut_type.ToString().ToUpper());
-                        if (ProjectTestItem.DUT!= null && ProjectTestItem.DUT.IsConnected == true) {
-
-                            if (thrd != null) thrd.Abort();
-                            thrd = new Thread(new ThreadStart(() => {
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                            }));
-                            thrd.IsBackground = true;
-                            thrd.Start();
-                        }
+                        controlLED(cmd);
                         break;
                     }
                 case "OK": {
@@ -102,21 +79,7 @@ namespace SmartHomeControlLibrary.__Window__ {
                         if (th_4.IsChecked == true) LedResult = "4";
 
                         string cmd = string.Format("CHECK,{0},{1},Led_Off_All!", this.dut_id, this.dut_type.ToString().ToUpper());
-                        if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-
-                            if (thrd != null) thrd.Abort();
-                            thrd = new Thread(new ThreadStart(() => {
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                            }));
-                            thrd.IsBackground = true;
-                            thrd.Start();
-                        }
-
+                        controlLED(cmd);
                         this.Close();
                         break;
                     }

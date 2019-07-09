@@ -27,6 +27,19 @@ namespace SmartHomeControlLibrary.__Window__ {
         public string SpeakerResult = "";
         Thread thr_bzz = null;
 
+        void controlSpeaker(string command_line) {
+            //if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
+            if (thr_bzz != null) thr_bzz.Abort();
+            thr_bzz = new Thread(new ThreadStart(() => {
+                ProjectTestItem.DUT.WriteLine(command_line);
+                Thread.Sleep(500);
+            }));
+            thr_bzz.IsBackground = true;
+            thr_bzz.Start();
+            //}
+        }
+
+
         public SingleSpeaker(string deviceid, DeviceType devicetype) {
             InitializeComponent();
 
@@ -34,20 +47,8 @@ namespace SmartHomeControlLibrary.__Window__ {
             this.dut_type = devicetype;
 
             string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", this.dut_id, this.dut_type.ToString().ToUpper());
-            if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-
-                if (thr_bzz != null) thr_bzz.Abort();
-                thr_bzz = new Thread(new ThreadStart(() => {
-                    ProjectTestItem.DUT.WriteLine(cmd);
-                    ProjectTestItem.DUT.WriteLine(cmd);
-                    ProjectTestItem.DUT.WriteLine(cmd);
-                    Thread.Sleep(250);
-                }));
-                thr_bzz.IsBackground = true;
-                thr_bzz.Start();
-            }
+            controlSpeaker(cmd);
         }
-
 
         private void Button_Click(object sender, RoutedEventArgs e) {
             Button b = sender as Button;
@@ -62,19 +63,7 @@ namespace SmartHomeControlLibrary.__Window__ {
                         this.lbl_speakerstatus.Content = "Loa đang kêu !";
                         this.pg_Speaker.Fill = Brushes.Lime;
                         string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_On!", this.dut_id, this.dut_type.ToString().ToUpper());
-                        if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-
-                            if (thr_bzz != null) thr_bzz.Abort();
-                            thr_bzz = new Thread(new ThreadStart(() => {
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                            }));
-                            thr_bzz.IsBackground = true;
-                            thr_bzz.Start();
-
-                        }
+                        controlSpeaker(cmd);
                         break;
                     }
 
@@ -86,18 +75,7 @@ namespace SmartHomeControlLibrary.__Window__ {
                         this.lbl_speakerstatus.Content = "Loa đang tắt !";
                         this.pg_Speaker.Fill = Brushes.White;
                         string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", this.dut_id, this.dut_type.ToString().ToUpper());
-                        if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-
-                            if (thr_bzz != null) thr_bzz.Abort();
-                            thr_bzz = new Thread(new ThreadStart(() => {
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                            }));
-                            thr_bzz.IsBackground = true;
-                            thr_bzz.Start();
-                        }
+                        controlSpeaker(cmd);
                         break;
                     }
 
@@ -110,19 +88,7 @@ namespace SmartHomeControlLibrary.__Window__ {
                         if (th_2.IsChecked == true) SpeakerResult = "2";
 
                         string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", this.dut_id, this.dut_type.ToString().ToUpper());
-                        if (ProjectTestItem.DUT != null && ProjectTestItem.DUT.IsConnected == true) {
-
-                            if (thr_bzz != null) thr_bzz.Abort();
-                            thr_bzz = new Thread(new ThreadStart(() => {
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                ProjectTestItem.DUT.WriteLine(cmd);
-                                Thread.Sleep(250);
-                            }));
-                            thr_bzz.IsBackground = true;
-                            thr_bzz.Start();
-                        }
-
+                        controlSpeaker(cmd);
                         this.Close();
                         break;
                     }
