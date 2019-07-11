@@ -216,6 +216,8 @@ namespace SmartHomeControlLibrary.CarbonMonoxideDetector.PCBAFUNCTION {
             if (myGlobal.myTesting.IsCheckSpeaker) {
                 myGlobal.myTesting.ValidateSpeaker = "Waiting...";
 
+                Thread.Sleep(3000); //
+
                 //check connection between DUT (module zigbee) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
                     r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);

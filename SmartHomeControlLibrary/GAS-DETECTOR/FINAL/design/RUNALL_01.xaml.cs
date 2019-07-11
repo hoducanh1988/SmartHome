@@ -21,9 +21,9 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using UtilityPack.IO;
 
-namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
+namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
     /// <summary>
-    /// Interaction logic for RUNALL.xaml
+    /// Interaction logic for RUNALL_01.xaml
     /// </summary>
     public partial class RUNALL : UserControl {
 
@@ -53,10 +53,17 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             Button b = sender as Button;
             string tag = b.Tag.ToString();
 
+            InputDeviceIDAndSerialNumber window = new InputDeviceIDAndSerialNumber();
+            window.ShowDialog();
+            string _id = window.DeviceID;
+            string _sn = window.DeviceSN;
+
+            if (string.IsNullOrEmpty(_id) || string.IsNullOrEmpty(_sn)) return;
+
             switch (tag) {
                 case "runall": {
                         Thread t = new Thread(new ThreadStart(() => {
-                            _RunAll();
+                            _RunAll(_id, _sn);
                         }));
                         t.IsBackground = true;
                         t.Start();
@@ -67,7 +74,7 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
         }
 
         //
-        private void _RunAll() {
+        private void _RunAll(string id, string sn) {
             myGlobal.myTesting.StartButtonContent = "STOP";
             timer_scrollsystemlog.Start();
 
@@ -75,127 +82,130 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             st.Start();
 
             bool r = false;
-            int idretry = myGlobal.mySetting.GetIDRetry;
             int comretry = myGlobal.mySetting.CommonRetry;
-
 
             //release device under test
             if (ProjectTestItem.DUT != null) ProjectTestItem.DUT = null;
 
             //init control 
             myGlobal.myTesting.initValidating();
+            myGlobal.myTesting.ID = id;
+            myGlobal.myTesting.SerialNumber = sn;
 
+            //1 - validate product id
+            if (myGlobal.myTesting.IsVerifyID) {
+                myGlobal.myTesting.ValidateID = "Waiting...";
 
-            //1 - Validate connection vs usb dongle
-            if (myGlobal.myTesting.IsCheckConnection) {
-                myGlobal.myTesting.ValidateConnection = "Waiting...";
-
-                //check connection between DUT (module zigbee) vs PC
+                //check connection between DUT (usb dongle) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
-                        myGlobal.myTesting.ValidateConnection = "Failed";
-                        goto END;
+                        myGlobal.myTesting.ValidateID = "Failed";
+                        return;
                     }
                 }
-                //check connection between DUT (module zigbee) vs usb dongle
-                string id = "";
-                r = ProjectTestItem.Is_Module_ZigBee_Join_To_Network_D<TestingInformation>(myGlobal.myTesting, comretry, idretry, myGlobal.mySetting.DelayRetry, out id);
-                myGlobal.myTesting.ValidateConnection = r == true ? "Passed" : "Failed";
-                myGlobal.myTesting.ID = id;
-                if (!r) goto END;
+
             }
 
-            //2 - Validate data transmission vs usb dongle
-            if (myGlobal.myTesting.IsCheckTransmission) {
-                myGlobal.myTesting.ValidateTransmission = "Waiting...";
+            //2 - validate firmware version
+            if (myGlobal.myTesting.IsVerifyFW) {
+                myGlobal.myTesting.ValidateFirmware = "Waiting...";
 
-                //check connection between DUT (module zigbee) vs PC
+                //check connection between DUT (usb dongle) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
-                        myGlobal.myTesting.ValidateTransmission = "Failed";
-                        goto END;
+                        myGlobal.myTesting.ValidateFirmware = "Failed";
+                        return;
                     }
                 }
-                //check data transmission between DUT (module zigbee) vs usb dongle
-                string cmd = string.Format("CHECK,{0},SMH_ZIGBEE,RF!", myGlobal.myTesting.ID);
-                r = ProjectTestItem.Is_DUT_Transmitted_To_Node_RF_D<TestingInformation>(myGlobal.myTesting, comretry, myGlobal.mySetting.DelayRetry, cmd);
-                myGlobal.myTesting.ValidateTransmission = r == true ? "Passed" : "Failed";
-                if (!r) goto END;
+
             }
 
-            //3 - Validate temperature sensor
+            //3 - validate model
+            if (myGlobal.myTesting.IsVerifyModel) {
+                myGlobal.myTesting.ValidateModel = "Waiting...";
+
+                //check connection between DUT (usb dongle) vs PC
+                if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    if (!r) {
+                        myGlobal.myTesting.ValidateModel = "Failed";
+                        return;
+                    }
+                }
+
+
+            }
+
+            //4 - write serial number
+            if (myGlobal.myTesting.IsWriteSN) {
+                myGlobal.myTesting.WriteSerialNumber = "Waiting...";
+
+                //check connection between DUT (usb dongle) vs PC
+                if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    if (!r) {
+                        myGlobal.myTesting.WriteSerialNumber = "Failed";
+                        return;
+                    }
+                }
+                
+            }
+
+            //5 - Validate temperature sensor
             if (myGlobal.myTesting.IsCheckTemperature) {
                 myGlobal.myTesting.ValidateTemperature = "Waiting...";
 
-                //check connection between DUT (module zigbee) vs PC
+                //check connection between DUT (usb dongle) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
                         myGlobal.myTesting.ValidateTemperature = "Failed";
-                        goto END;
+                        return;
                     }
                 }
                 //check temperature sensor
-                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, SensorType.Temperature, myGlobal.mySetting.TemperatureValue, myGlobal.mySetting.TemperatureAccuracy, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, SensorType.Temperature, myGlobal.mySetting.TemperatureValue, myGlobal.mySetting.TemperatureAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateTemperature = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
 
-            //4 - Validate humidity sensor
+            //6 - Validate humidity sensor
             if (myGlobal.myTesting.IsCheckHumidity) {
                 myGlobal.myTesting.ValidateHumidity = "Waiting...";
 
-                //check connection between DUT (module zigbee) vs PC
+                //check connection between DUT (usb dongle) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
-                        myGlobal.myTesting.ValidateHumidity = "Failed";
-                        goto END;
+                        myGlobal.myTesting.ValidateTemperature = "Failed";
+                        return;
                     }
                 }
                 //check humidity sensor
-                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, SensorType.Humidity, myGlobal.mySetting.HumidityValue, myGlobal.mySetting.HumidityAccuracy, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, SensorType.Humidity, myGlobal.mySetting.HumidityValue, myGlobal.mySetting.HumidityAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateHumidity = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
 
-            //5 - Validate smoke sensor
-            if (myGlobal.myTesting.IsCheckSmokeSensor) {
-                myGlobal.myTesting.ValidateSmokeSensor = "Waiting...";
-
-                //check connection between DUT (module zigbee) vs PC
-                if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
-                    if (!r) {
-                        myGlobal.myTesting.ValidateSmokeSensor = "Failed";
-                        goto END;
-                    }
-                }
-                //check smoke sensor
-                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, SensorType.Smoke, myGlobal.mySetting.SmokeValue, myGlobal.mySetting.SmokeAccuracy, comretry, myGlobal.mySetting.DelayRetry);
-                myGlobal.myTesting.ValidateSmokeSensor = r == true ? "Passed" : "Failed";
-                if (!r) goto END;
-            }
-
-            //6 - Validate LED
+            //7 - Validate LED
             if (myGlobal.myTesting.IsCheckLED) {
                 myGlobal.myTesting.ValidateLED = "Waiting...";
 
-                //check connection between DUT (module zigbee) vs PC
+                //check connection between DUT (usb dongle) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
-                        myGlobal.myTesting.ValidateLED = "Failed";
-                        goto END;
+                        myGlobal.myTesting.ValidateTemperature = "Failed";
+                        return;
                     }
                 }
                 //check led
                 Dispatcher.Invoke(new Action(() => {
                     this.Opacity = 0.5;
                     myGlobal.myTesting.LogSystem += string.Format("\r\n+++ KIỂM TRA LED +++\r\n");
-                    SingleLED window = new SingleLED(myGlobal.myTesting.ID, DeviceType.SMH_SMOKE);
+                    SingleLED window = new SingleLED(myGlobal.myTesting.ID, DeviceType.SMH_GAS);
                     window.ShowDialog();
                     r = window.LedResult == "1";
                     myGlobal.myTesting.ValidateLED = window.LedResult == "1" ? "Passed" : "Failed";
@@ -214,25 +224,25 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 if (!r) { goto END; }
             }
 
-            //7 - Validate speaker
+            //8 - Validate speaker
             if (myGlobal.myTesting.IsCheckSpeaker) {
                 myGlobal.myTesting.ValidateSpeaker = "Waiting...";
 
                 Thread.Sleep(3000); //
 
-                //check connection between DUT (module zigbee) vs PC
+                //check connection between DUT (usb dongle) vs PC
                 if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
+                    r = ProjectTestItem.Open_Device_USB_Dongle(myGlobal.myTesting, myGlobal.mySetting, comretry);
                     if (!r) {
-                        myGlobal.myTesting.ValidateSpeaker = "Failed";
-                        goto END;
+                        myGlobal.myTesting.ValidateTemperature = "Failed";
+                        return;
                     }
                 }
                 //check speaker
                 Dispatcher.Invoke(new Action(() => {
                     this.Opacity = 0.5;
                     myGlobal.myTesting.LogSystem += string.Format("\r\n+++ KIỂM TRA CÒI BÁO ĐỘNG +++\r\n");
-                    SingleSpeaker window = new SingleSpeaker(myGlobal.myTesting.ID, DeviceType.SMH_SMOKE);
+                    SingleSpeaker window = new SingleSpeaker(myGlobal.myTesting.ID, DeviceType.SMH_GAS);
                     window.ShowDialog();
                     r = window.SpeakerResult == "1";
                     myGlobal.myTesting.ValidateSpeaker = window.SpeakerResult == "1" ? "Passed" : "Failed";
@@ -249,71 +259,6 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 if (!r) { goto END; }
             }
 
-            
-            //9 - Print the product id label
-            if (myGlobal.myTesting.IsPrintLabel) {
-                myGlobal.myTesting.PrintLabel = "Waiting...";
-
-                //check id valid or not
-                r = !string.IsNullOrEmpty(myGlobal.myTesting.ID);
-                if (!r) {
-                    myGlobal.myTesting.PrintLabel = "Failed";
-                    goto END;
-                }
-                //print label
-                string id_table_name = "tb_ProductID";
-                string log_table_name = "tb_DataLog";
-                string report_name = "ProductID";
-
-                TableProductID id_info = new TableProductID() { ProductID = myGlobal.myTesting.ID };
-                TableDataLog ms_log_info = new TableDataLog() {
-                    DateTimeCreated = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
-                    ErrorMessage = "",
-                    Factory = "",
-                    JigNumber = "",
-                    LineCode = "",
-                    ProductCode = "",
-                    ProductColor = "",
-                    ProductID = id_info.ProductID,
-                    ProductName = "SMOKE DETECTOR",
-                    ProductNumber = "",
-                    Station = "PCBA-FUNCTION",
-                    Worker = "",
-                    WorkOrder = ""
-                };
-
-                r = ProjectTestItem.Print_DUT_ID_Labels<TestingInformation, TableProductID, TableDataLog>
-                    (
-                        myGlobal.myTesting,
-                        myGlobal.myTesting.ID,
-                        string.Format("{0}access_db\\{1}", AppDomain.CurrentDomain.BaseDirectory, myGlobal.mySetting.MSAccessFile),
-                        id_table_name,
-                        id_info,
-                        log_table_name,
-                        ms_log_info,
-                        report_name
-                    );
-                myGlobal.myTesting.PrintLabel = r == true ? "Passed" : "Failed";
-                if (!r) goto END;
-            }
-
-            //10. Switch firmware to user mode
-            if (myGlobal.myTesting.IsSwitchFirmwareMode) {
-                myGlobal.myTesting.SwitchFirmwareMode = "Waiting...";
-
-                //check connection between DUT (module zigbee) vs PC
-                if (ProjectTestItem.DUT == null || ProjectTestItem.DUT.IsConnected == false) {
-                    r = ProjectTestItem.Is_DUT_Connected_To_Client_PC<TestingInformation, SettingInformation>(myGlobal.myTesting, myGlobal.mySetting, comretry);
-                    if (!r) {
-                        myGlobal.myTesting.SwitchFirmwareMode = "Failed";
-                        goto END;
-                    }
-                }
-                //switch firmware to user mode
-                r = ProjectTestItem.Switch_Firmware_To_User_Mode<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, "111", 3);
-                myGlobal.myTesting.SwitchFirmwareMode = r == true ? "Passed" : "Failed";
-                if (!r) goto END;
-            }
 
         END:
             st.Stop();
@@ -334,9 +279,9 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             //save log
             string logdir = string.Format("{0}log", AppDomain.CurrentDomain.BaseDirectory);
             if (!Directory.Exists(logdir)) { Directory.CreateDirectory(logdir); Thread.Sleep(100); }
-            string pddir = string.Format("{0}\\smokedetector", logdir);
+            string pddir = string.Format("{0}\\gasdetector", logdir);
             if (!Directory.Exists(pddir)) { Directory.CreateDirectory(pddir); Thread.Sleep(100); }
-            string stdir = string.Format("{0}\\pcba", pddir);
+            string stdir = string.Format("{0}\\asm", pddir);
             if (!Directory.Exists(stdir)) { Directory.CreateDirectory(stdir); Thread.Sleep(100); }
 
             string lgsingle = string.Format("{0}\\logsingle", stdir);
@@ -354,19 +299,19 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             sw.Close();
 
             //log total
-            string _title = "DateTimeCreate,ID,ConRF,TransRF,Temperature,Humidity,Smoke,LED,Speaker,PrintLabel,SwitchFW,Total";
+            string _title = "DateTimeCreate,ID,SN,ConfID,ConfFW,ConfModel,WriteSN,Temperature,Humidity,LED,Speaker,Total";
             string _content = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
                                             DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
                                             myGlobal.myTesting.ID,
-                                            myGlobal.myTesting.ValidateConnection,
-                                            myGlobal.myTesting.ValidateTransmission,
+                                            myGlobal.myTesting.SerialNumber,
+                                            myGlobal.myTesting.ValidateID,
+                                            myGlobal.myTesting.ValidateFirmware,
+                                            myGlobal.myTesting.ValidateModel,
+                                            myGlobal.myTesting.WriteSerialNumber,
                                             myGlobal.myTesting.ValidateTemperature,
                                             myGlobal.myTesting.ValidateHumidity,
-                                            myGlobal.myTesting.ValidateSmokeSensor,
                                             myGlobal.myTesting.ValidateLED,
                                             myGlobal.myTesting.ValidateSpeaker,
-                                            myGlobal.myTesting.PrintLabel,
-                                            myGlobal.myTesting.SwitchFirmwareMode,
                                             myGlobal.myTesting.TotalResult);
 
             string ft = string.Format("{0}\\{1}.csv", lgtotal, DateTime.Now.ToString("yyyyMMdd"));
@@ -377,12 +322,14 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             else sw = new StreamWriter(ft, true, Encoding.Unicode);
             sw.WriteLine(_content);
             sw.Close();
+
         }
 
     }
 
 
     public class TestingInformation : INotifyPropertyChanged {
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name) {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -401,18 +348,17 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             LogSystem = "";
             TotalResult = "-";
             ID = "";
+            SerialNumber = "";
             TestMessage = "";
 
-            ValidateConnection = "-";
-            ValidateTransmission = "-";
-            ValidateSmokeSensor = "-";
+            ValidateID = "-";
+            ValidateFirmware = "-";
+            ValidateModel = "-";
+            WriteSerialNumber = "-";
             ValidateHumidity = "-";
             ValidateLED = "-";
             ValidateSpeaker = "-";
             ValidateTemperature = "-";
-            SaveInfoToSql = "-";
-            PrintLabel = "-";
-            SwitchFirmwareMode = "-";
 
             StartButtonContent = "START";
             StartButtonEnable = true;
@@ -422,18 +368,17 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             LogSystem = "";
             TotalResult = "Waiting...";
             ID = "";
+            SerialNumber = "";
             TestMessage = "";
 
-            ValidateConnection = "-";
-            ValidateTransmission = "-";
-            ValidateSmokeSensor = "-";
+            ValidateID = "-";
+            ValidateFirmware = "-";
+            ValidateModel = "-";
+            WriteSerialNumber = "-";
             ValidateHumidity = "-";
             ValidateLED = "-";
             ValidateSpeaker = "-";
             ValidateTemperature = "-";
-            SaveInfoToSql = "-";
-            PrintLabel = "-";
-            SwitchFirmwareMode = "-";
         }
 
         public bool initPassed() {
@@ -471,6 +416,14 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 OnPropertyChanged(nameof(ID));
             }
         }
+        string _sn;
+        public string SerialNumber {
+            get { return _sn; }
+            set {
+                _sn = value;
+                OnPropertyChanged(nameof(SerialNumber));
+            }
+        }
         string _testmessage;
         public string TestMessage {
             get { return _testmessage; }
@@ -481,20 +434,36 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
         }
 
 
-        string _validateconnection;
-        public string ValidateConnection {
-            get { return _validateconnection; }
+        string _validateid;
+        public string ValidateID {
+            get { return _validateid; }
             set {
-                _validateconnection = value;
-                OnPropertyChanged(nameof(ValidateConnection));
+                _validateid = value;
+                OnPropertyChanged(nameof(ValidateID));
             }
         }
-        string _validatetransmission;
-        public string ValidateTransmission {
-            get { return _validatetransmission; }
+        string _validatefirmware;
+        public string ValidateFirmware {
+            get { return _validatefirmware; }
             set {
-                _validatetransmission = value;
-                OnPropertyChanged(nameof(ValidateTransmission));
+                _validatefirmware = value;
+                OnPropertyChanged(nameof(ValidateFirmware));
+            }
+        }
+        string _validatemodel;
+        public string ValidateModel {
+            get { return _validatemodel; }
+            set {
+                _validatemodel = value;
+                OnPropertyChanged(nameof(ValidateModel));
+            }
+        }
+        string _writeserialnumber;
+        public string WriteSerialNumber {
+            get { return _writeserialnumber; }
+            set {
+                _writeserialnumber = value;
+                OnPropertyChanged(nameof(WriteSerialNumber));
             }
         }
         string _validatetemperature;
@@ -513,14 +482,6 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 OnPropertyChanged(nameof(ValidateHumidity));
             }
         }
-        string _validatesmokesensor;
-        public string ValidateSmokeSensor {
-            get { return _validatesmokesensor; }
-            set {
-                _validatesmokesensor = value;
-                OnPropertyChanged(nameof(ValidateSmokeSensor));
-            }
-        }
         string _validateled;
         public string ValidateLED {
             get { return _validateled; }
@@ -537,34 +498,8 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 OnPropertyChanged(nameof(ValidateSpeaker));
             }
         }
-        string _saveinfotosql;
-        public string SaveInfoToSql {
-            get { return _saveinfotosql; }
-            set {
-                _saveinfotosql = value;
-                OnPropertyChanged(nameof(SaveInfoToSql));
-            }
-        }
-        string _printlabel;
-        public string PrintLabel {
-            get { return _printlabel; }
-            set {
-                _printlabel = value;
-                OnPropertyChanged(nameof(PrintLabel));
-            }
-        }
-        string _switchfirmwaremode;
-        public string SwitchFirmwareMode {
-            get { return _switchfirmwaremode; }
-            set {
-                _switchfirmwaremode = value;
-                OnPropertyChanged(nameof(SwitchFirmwareMode));
-            }
-        }
-
-
-
-
+        
+        
         string _startbuttoncontent;
         public string StartButtonContent {
             get { return _startbuttoncontent; }
@@ -583,22 +518,6 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
         }
 
         //is validate
-        bool _ischeckconnection;
-        public bool IsCheckConnection {
-            get { return _ischeckconnection; }
-            set {
-                _ischeckconnection = value;
-                OnPropertyChanged(nameof(IsCheckConnection));
-            }
-        }
-        bool _ischecktransmission;
-        public bool IsCheckTransmission {
-            get { return _ischecktransmission; }
-            set {
-                _ischecktransmission = value;
-                OnPropertyChanged(nameof(IsCheckTransmission));
-            }
-        }
         bool _ischecktemperature;
         public bool IsCheckTemperature {
             get { return _ischecktemperature; }
@@ -613,14 +532,6 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
             set {
                 _ischeckhumidity = value;
                 OnPropertyChanged(nameof(IsCheckHumidity));
-            }
-        }
-        bool _ischecksmokesensor;
-        public bool IsCheckSmokeSensor {
-            get { return _ischecksmokesensor; }
-            set {
-                _ischecksmokesensor = value;
-                OnPropertyChanged(nameof(IsCheckSmokeSensor));
             }
         }
         bool _ischeckled;
@@ -639,59 +550,37 @@ namespace SmartHomeControlLibrary.SMOKEDETECTOR.PCBAFUNCTION {
                 OnPropertyChanged(nameof(IsCheckSpeaker));
             }
         }
-        bool _isstorageinfotosql;
-        public bool IsStorageInfoToSql {
-            get { return _isstorageinfotosql; }
+        bool _isverifyid;
+        public bool IsVerifyID {
+            get { return _isverifyid; }
             set {
-                _isstorageinfotosql = value;
-                OnPropertyChanged(nameof(IsStorageInfoToSql));
+                _isverifyid = value;
+                OnPropertyChanged(nameof(IsVerifyID));
             }
         }
-        bool _isprintlabel;
-        public bool IsPrintLabel {
-            get { return _isprintlabel; }
+        bool _isverifyfw;
+        public bool IsVerifyFW {
+            get { return _isverifyfw; }
             set {
-                _isprintlabel = value;
-                OnPropertyChanged(nameof(IsPrintLabel));
+                _isverifyfw = value;
+                OnPropertyChanged(nameof(IsVerifyFW));
             }
         }
-        bool _isswitchfirmwaremode;
-        public bool IsSwitchFirmwareMode {
-            get { return _isswitchfirmwaremode; }
+        bool _isverifymodel;
+        public bool IsVerifyModel {
+            get { return _isverifymodel; }
             set {
-                _isswitchfirmwaremode = value;
-                OnPropertyChanged(nameof(IsSwitchFirmwareMode));
+                _isverifymodel = value;
+                OnPropertyChanged(nameof(IsVerifyModel));
             }
         }
-    }
-
-
-    public class TableProductID {
-        public string ProductID { get; set; }
-    }
-
-    public class TableDataLog {
-
-        public string tb_ID { get; set; }
-        public string DateTimeCreated { get; set; }
-        public string ProductID { get; set; }
-        public string ProductName { get; set; }
-        public string ProductCode { get; set; }
-        public string ProductNumber { get; set; }
-        public string ProductColor { get; set; }
-        public string WorkOrder { get; set; }
-        public string Factory { get; set; }
-        public string LineCode { get; set; }
-        public string Station { get; set; }
-        public string JigNumber { get; set; }
-        public string Worker { get; set; }
-        public string TotalResult { get; set; }
-        public string ErrorMessage { get; set; }
-    }
-
-    public class TableProductManagement {
-        public string tb_ID { get; set; }
-        public string DeviceID { get; set; }
-        public string DeviceType { get; set; }
+        bool _iswritesn;
+        public bool IsWriteSN {
+            get { return _iswritesn; }
+            set {
+                _iswritesn = value;
+                OnPropertyChanged(nameof(IsWriteSN));
+            }
+        }
     }
 }

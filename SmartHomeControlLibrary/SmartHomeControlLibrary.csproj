@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="reachframework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -49,8 +52,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UtilityPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UtilityPack.1.0.0\lib\net45\UtilityPack.dll</HintPath>
+    <Reference Include="UtilityPack, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UtilityPack.1.0.2\lib\net45\UtilityPack.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -133,8 +136,14 @@
     <Compile Include="GAS-DETECTOR\FINAL\design\RUNALL.xaml.cs">
       <DependentUpon>RUNALL.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\design\RUNALL_01.xaml.cs">
+      <DependentUpon>RUNALL_01.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GAS-DETECTOR\FINAL\design\SETTING.xaml.cs">
       <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GAS-DETECTOR\FINAL\design\SETTING_01.xaml.cs">
+      <DependentUpon>SETTING_01.xaml</DependentUpon>
     </Compile>
     <Compile Include="GAS-DETECTOR\FINAL\function\myGlobal.cs" />
     <Compile Include="GAS-DETECTOR\PCBA\design\ABOUT.xaml.cs">
@@ -311,6 +320,9 @@
     <Compile Include="__Window__\InputDeviceID.xaml.cs">
       <DependentUpon>InputDeviceID.xaml</DependentUpon>
     </Compile>
+    <Compile Include="__Window__\InputDeviceIDAndSerialNumber.xaml.cs">
+      <DependentUpon>InputDeviceIDAndSerialNumber.xaml</DependentUpon>
+    </Compile>
     <Compile Include="__Window__\LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
@@ -439,7 +451,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\RUNALL_01.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GAS-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GAS-DETECTOR\FINAL\design\SETTING_01.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -636,6 +656,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="__Window__\InputDeviceID.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="__Window__\InputDeviceIDAndSerialNumber.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

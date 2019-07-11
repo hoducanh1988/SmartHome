@@ -175,7 +175,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         try {
                             string cmd = string.Format("CHECK,{0},{1},Led_Green_On!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
                             ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                             this.cbb_LED.IsEnabled = true;
                         } catch { }
                         break;
@@ -193,7 +193,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         try {
                             string cmd = string.Format("CHECK,{0},{1},Led_Red_On!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
                             ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                         }
                         catch { }
                         break;
@@ -211,7 +211,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         try {
                             string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_On!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
                             ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                             this.cbb_Speaker.IsEnabled = true;
                         }
                         catch { }
@@ -230,7 +230,7 @@ namespace SmartHomeControlLibrary.__Userctrl__ {
                         try {
                             string cmd = string.Format("CHECK,{0},{1},Test_Buzzer_Off!", myTesting.FID, myTesting.FdeviceType.ToString().ToUpper());
                             ProjectTestItem.DUT.WriteLine(cmd);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                         }
                         catch { }
                         break;
