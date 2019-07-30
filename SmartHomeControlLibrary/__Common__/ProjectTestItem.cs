@@ -817,7 +817,7 @@ namespace SmartHomeControlLibrary.__Common__ {
             //07.06.2019 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`//
             access.accessDB.Close();
             Thread.Sleep(100);
-            
+
             string pf = string.Format("{0}PrintReportAccess.exe", AppDomain.CurrentDomain.BaseDirectory);
             string tf = string.Format("{0}T.tmp", AppDomain.CurrentDomain.BaseDirectory);
             string ff = string.Format("{0}F.tmp", AppDomain.CurrentDomain.BaseDirectory);
@@ -841,7 +841,7 @@ namespace SmartHomeControlLibrary.__Common__ {
 
             r = System.IO.File.Exists(tf);
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-            
+
             //r = access.Print_Access_Report(report_id_name);
             if (!r) {
                 LogSystem += string.Format("Failed\r\n");
@@ -1041,6 +1041,14 @@ namespace SmartHomeControlLibrary.__Common__ {
                 se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
             }
             catch { se_value = double.MaxValue; }
+
+            //convert adc to mV value - SMOKE - update 16/07/2019
+            if (sensor_name.Equals("SMOKE")) {
+                if (se_value != double.MaxValue) {
+                    se_value = Math.Round(ProjectUtility.convertADCtomV(1.19, 11, se_value) * 1000, 2);
+                }
+            }
+
             LogSystem += string.Format(".........Giá trị: {0}\r\n", se_value);
             LogSystem += string.Format(".........Tiêu chuẩn: {0} ~ {1}\r\n", lw_value, up_value);
             //validate sensor value
@@ -1150,7 +1158,7 @@ namespace SmartHomeControlLibrary.__Common__ {
                     se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
                 }
                 else se_value = -999;
-                    //se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
+                //se_value = double.Parse(buffer[idx].Replace("!", "").Replace("\r", "").Replace("\n", "").Trim());
             }
             catch { se_value = -999; }
             //catch { se_value = double.MaxValue; }
@@ -1514,6 +1522,496 @@ namespace SmartHomeControlLibrary.__Common__ {
             return se_value;
         }
 
+
+        /// <summary>
+        /// FUNCTION: KIEM TRA ID TREN TEM VA ID TRONG SAN PHAM CO GIONG NHAU HAY KHONG
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: true = same, false = not same
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="retrytime"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        public static bool Validate_ID_Value_D<T>(T testinfo, string dut_id, DeviceType dut_type, int retrytime, int delay) where T : class, new() {
+            bool r = false;
+
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            LogSystem += string.Format("\r\n+++ KIỂM TRA SỰ TRÙNG KHỚP CỦA ID TRÊN TEM VÀ ID SẢN PHẨM +++\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check Usb dongle connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: usb dongle chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("usb dongle chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+
+            //get id value
+            string cmd = string.Format("CHECK,NODEID!");
+            string feedback_data = "";
+            string p_ID = "";
+            int count = 0;
+
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới usb dongle: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ usb dongle: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ usb dongle là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ usb dongle \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                p_ID = buffer[1];
+                string s = "";
+                foreach (char c in p_ID) {
+                    if ((int)c != 0) {
+                        s += c.ToString();
+                    }
+                }
+                p_ID = s;
+            }
+            catch { p_ID = ""; }
+            // B4 FD 33 19 00 4B 12 00 
+
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", p_ID);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0}\r\n", dut_id);
+
+            //validate ID
+            r = (p_ID.Equals(dut_id));
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: ID trên tem và ID sản phẩm là khác nhau.\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("ID trên tem và ID sản phẩm là khác nhau.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: KIEM TRA FIRMWARE VERSION SAN PHAM CO DUNG VOI TIEU CHUAN HAY KHONG
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: true = same, false = not same
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="firmware_version"></param>
+        /// <param name="retrytime"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        public static bool Validate_Firmware_Version_Value_D<T>(T testinfo, string dut_id, DeviceType dut_type, string firmware_version, int retrytime, int delay) where T : class, new() {
+            bool r = false;
+
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            LogSystem += string.Format("\r\n+++ KIỂM TRA FIRMWARE VERSION CỦA SẢN PHẨM +++\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check Usb dongle connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: usb dongle chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("usb dongle chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+
+            //get firmware version
+            string cmd = string.Format("CHECK,{0},{1},Mode_Read_FW!", dut_id, dut_type.ToString().ToUpper());
+            string feedback_data = "";
+            string p_FW = "";
+            int count = 0;
+
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới usb dongle: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ usb dongle: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ usb dongle là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ usb dongle \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                p_FW = buffer[4];
+            }
+            catch { p_FW = ""; }
+
+
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", p_FW);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0}\r\n", firmware_version);
+
+            //validate firmware version
+            r = (p_FW.Equals(firmware_version));
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: firmware version của sản phẩm không đúng.\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("firmware version của sản phẩm không đúng.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: KIEM TRA MODEL SAN PHAM CO DUNG VOI TIEU CHUAN HAY KHONG
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: true = same, false = not same
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="model"></param>
+        /// <param name="retrytime"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        public static bool Validate_Model_Value_D<T>(T testinfo, string dut_id, DeviceType dut_type, string model, int retrytime, int delay) where T : class, new() {
+            bool r = false;
+
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            LogSystem += string.Format("\r\n+++ KIỂM TRA MODEL CỦA SẢN PHẨM +++\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check Usb dongle connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: usb dongle chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("usb dongle chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+
+            //get model
+            string cmd = string.Format("CHECK,{0},{1},Mode_Read_MD!", dut_id, dut_type.ToString().ToUpper());
+            string feedback_data = "";
+            string p_Model = "";
+            int count = 0;
+
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới usb dongle: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ usb dongle: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ usb dongle là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ usb dongle \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                p_Model = buffer[4];
+            }
+            catch { p_Model = ""; }
+
+
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", p_Model);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0}\r\n", model);
+
+            //validate model
+            r = (p_Model.Equals(model));
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: model của sản phẩm không đúng.\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("model của sản phẩm không đúng.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: KIEM TRA SERIAL NUMBER SAN PHAM CO GIONG VOI TREN TEM HAY KHONG
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: true = same, false = not same
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="serialnumber"></param>
+        /// <param name="retrytime"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        public static bool Validate_SerialNumber_Value_D<T>(T testinfo, string dut_id, DeviceType dut_type, string serialnumber, int retrytime, int delay) where T : class, new() {
+            bool r = false;
+
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            LogSystem += string.Format("\r\n+++ KIỂM TRA SERIAL NUMBER CỦA SẢN PHẨM +++\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check Usb dongle connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: usb dongle chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("usb dongle chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+
+            //get serial number
+            string cmd = string.Format("CHECK,{0},{1},Mode_Read_SN!", dut_id, dut_type.ToString().ToUpper());
+            string feedback_data = "";
+            string p_SN = "";
+            int count = 0;
+
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới usb dongle: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ usb dongle: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ usb dongle là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ usb dongle \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                p_SN = buffer[4];
+            }
+            catch { p_SN = ""; }
+
+
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", p_SN);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0}\r\n", serialnumber);
+
+            //validate serial number
+            r = (p_SN.Equals(serialnumber));
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: serial number của sản phẩm không đúng.\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("serial number của sản phẩm không đúng.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
+
+
+        /// <summary>
+        /// FUNCTION: GHI MA SERIAL NUMBER VAO SAN PHAM
+        /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Result: true = passed, false = failed
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="testinfo"></param>
+        /// <param name="dut_id"></param>
+        /// <param name="dut_type"></param>
+        /// <param name="serialnumber"></param>
+        /// <param name="retrytime"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        public static bool Write_SerialNumber_D<T>(T testinfo, string dut_id, DeviceType dut_type, string serialnumber, int retrytime, int delay) where T : class, new() {
+            bool r = false;
+
+            PropertyInfo em = testinfo.GetType().GetProperty("TestMessage");
+            PropertyInfo lg = testinfo.GetType().GetProperty("LogSystem");
+            string LogSystem = lg.GetValue(testinfo, null).ToString();
+
+            LogSystem += string.Format("\r\n+++ GHI MÃ SERIAL NUMBER VÀO SẢN PHẨM +++\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            //check Usb dongle connected to PC or not
+            if (DUT == null || DUT.IsConnected == false) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: usb dongle chưa kết nối tới máy tính trạm test\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+                em.SetValue(testinfo, Convert.ChangeType("usb dongle chưa kết nối tới máy tính trạm test.", em.PropertyType), null);
+                goto END;
+            }
+
+            //ghi mã serial number
+            string cmd = string.Format("CHECK,{0},{1},Mode_Write_SN,{2}!", dut_id, dut_type.ToString().ToUpper(), serialnumber);
+            string feedback_data = "";
+            string pass_String = "";
+            int count = 0;
+
+        REP_SEND:
+            count++;
+            LogSystem += string.Format(">>> Kiểm tra lần thứ {0}\r\n", count);
+            LogSystem += string.Format(".........Gửi lệnh tới usb dongle: {0}\r\n", cmd);
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+            feedback_data = DUT.QueryData(cmd, delay);
+            LogSystem += string.Format(".........Dữ liệu phản hồi từ usb dongle: {0}\r\n", feedback_data);
+            r = (string.IsNullOrEmpty(feedback_data) == false) && feedback_data.ToLower().Contains("resp,");
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: Dữ liệu phản hồi từ usb dongle là sai định dạng\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType(string.Format("Dữ liệu phản hồi từ usb dongle \"{0}\" là sai định dạng.", feedback_data), em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            feedback_data = feedback_data.Split('!')[0];
+            string[] buffer = feedback_data.Split(',');
+            try {
+                pass_String = buffer[3];
+            }
+            catch { pass_String = ""; }
+
+
+            LogSystem += string.Format(".........Giá trị: {0}\r\n", pass_String);
+            LogSystem += string.Format(".........Tiêu chuẩn: {0}\r\n", "OKOK");
+
+            //xác nhận kết quả ghi SN 
+            r = (pass_String.Equals("OKOK"));
+            if (!r) {
+                LogSystem += string.Format(".........Kết quả: Failed\r\n");
+                LogSystem += string.Format(".........Thông tin lỗi: chưa ghi được serial number vào sản phẩm.\r\n");
+                lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+                if (count < retrytime) {
+                    goto REP_SEND;
+                }
+                else {
+                    em.SetValue(testinfo, Convert.ChangeType("chưa ghi được serial number vào sản phẩm.", em.PropertyType), null);
+                    goto END;
+                }
+            }
+
+            LogSystem += string.Format(".........Kết quả: Passed\r\n");
+            lg.SetValue(testinfo, Convert.ChangeType(LogSystem, lg.PropertyType), null);
+
+        END:
+            //return value
+            return r;
+        }
 
 
     }

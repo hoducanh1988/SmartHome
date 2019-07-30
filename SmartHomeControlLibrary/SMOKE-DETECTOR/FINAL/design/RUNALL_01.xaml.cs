@@ -1,4 +1,5 @@
 ﻿using SmartHomeControlLibrary.__Common__;
+using SmartHomeControlLibrary.__Userctrl__;
 using SmartHomeControlLibrary.__Window__;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,9 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using UtilityPack.IO;
 
-namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
+namespace SmartHomeControlLibrary.SMOKEDETECTOR.FINALFUNCTION {
+
+
     /// <summary>
     /// Interaction logic for RUNALL_01.xaml
     /// </summary>
@@ -106,7 +109,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 }
 
                 //validate ID
-                r = ProjectTestItem.Validate_ID_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Validate_ID_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateID = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -125,7 +128,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 }
 
                 //validate firmware version
-                r = ProjectTestItem.Validate_Firmware_Version_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, myGlobal.mySetting.FirmwareVersion, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Validate_Firmware_Version_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, myGlobal.mySetting.FirmwareVersion, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateFirmware = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -144,7 +147,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 }
 
                 //validate model
-                r = ProjectTestItem.Validate_Model_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, myGlobal.mySetting.Model, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Validate_Model_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, myGlobal.mySetting.Model, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateModel = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -163,14 +166,14 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 }
 
                 //write serial number
-                r = ProjectTestItem.Write_SerialNumber_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, myGlobal.myTesting.SerialNumber, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Write_SerialNumber_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, myGlobal.myTesting.SerialNumber, comretry, myGlobal.mySetting.DelayRetry);
                 if (!r) {
                     myGlobal.myTesting.WriteSerialNumber = "Failed";
                     goto END;
                 }
 
                 //validate serial number
-                r = ProjectTestItem.Validate_SerialNumber_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, myGlobal.myTesting.SerialNumber, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Validate_SerialNumber_Value_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, myGlobal.myTesting.SerialNumber, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.WriteSerialNumber = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -188,7 +191,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                     }
                 }
                 //check temperature sensor
-                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, SensorType.Temperature, myGlobal.mySetting.TemperatureValue, myGlobal.mySetting.TemperatureAccuracy, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, SensorType.Temperature, myGlobal.mySetting.TemperatureValue, myGlobal.mySetting.TemperatureAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateTemperature = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -206,7 +209,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                     }
                 }
                 //check humidity sensor
-                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_GAS, SensorType.Humidity, myGlobal.mySetting.HumidityValue, myGlobal.mySetting.HumidityAccuracy, comretry, myGlobal.mySetting.DelayRetry);
+                r = ProjectTestItem.Is_Sensor_Valid_D<TestingInformation>(myGlobal.myTesting, myGlobal.myTesting.ID, DeviceType.SMH_SMOKE, SensorType.Humidity, myGlobal.mySetting.HumidityValue, myGlobal.mySetting.HumidityAccuracy, comretry, myGlobal.mySetting.DelayRetry);
                 myGlobal.myTesting.ValidateHumidity = r == true ? "Passed" : "Failed";
                 if (!r) goto END;
             }
@@ -227,7 +230,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 Dispatcher.Invoke(new Action(() => {
                     this.Opacity = 0.5;
                     myGlobal.myTesting.LogSystem += string.Format("\r\n+++ KIỂM TRA LED +++\r\n");
-                    SingleLED window = new SingleLED(myGlobal.myTesting.ID, DeviceType.SMH_GAS);
+                    SingleLED window = new SingleLED(myGlobal.myTesting.ID, DeviceType.SMH_SMOKE);
                     window.ShowDialog();
                     r = window.LedResult == "1";
                     myGlobal.myTesting.ValidateLED = window.LedResult == "1" ? "Passed" : "Failed";
@@ -264,7 +267,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 Dispatcher.Invoke(new Action(() => {
                     this.Opacity = 0.5;
                     myGlobal.myTesting.LogSystem += string.Format("\r\n+++ KIỂM TRA CÒI BÁO ĐỘNG +++\r\n");
-                    SingleSpeaker window = new SingleSpeaker(myGlobal.myTesting.ID, DeviceType.SMH_GAS);
+                    SingleSpeaker window = new SingleSpeaker(myGlobal.myTesting.ID, DeviceType.SMH_SMOKE);
                     window.ShowDialog();
                     r = window.SpeakerResult == "1";
                     myGlobal.myTesting.ValidateSpeaker = window.SpeakerResult == "1" ? "Passed" : "Failed";
@@ -301,7 +304,7 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
             //save log
             string logdir = string.Format("{0}log", AppDomain.CurrentDomain.BaseDirectory);
             if (!Directory.Exists(logdir)) { Directory.CreateDirectory(logdir); Thread.Sleep(100); }
-            string pddir = string.Format("{0}\\gasdetector", logdir);
+            string pddir = string.Format("{0}\\smokedetector", logdir);
             if (!Directory.Exists(pddir)) { Directory.CreateDirectory(pddir); Thread.Sleep(100); }
             string stdir = string.Format("{0}\\asm", pddir);
             if (!Directory.Exists(stdir)) { Directory.CreateDirectory(stdir); Thread.Sleep(100); }
@@ -519,8 +522,8 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
                 OnPropertyChanged(nameof(ValidateSpeaker));
             }
         }
-        
-        
+
+
         string _startbuttoncontent;
         public string StartButtonContent {
             get { return _startbuttoncontent; }
@@ -604,6 +607,5 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
             }
         }
     }
-
 
 }

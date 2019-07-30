@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UtilityPack.IO;
 
-namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
+namespace SmartHomeControlLibrary.SMOKEDETECTOR.FINALFUNCTION {
 
     /// <summary>
     /// Interaction logic for SETTING.xaml
@@ -298,6 +298,5 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
             }
         }
     }
-
 
 }

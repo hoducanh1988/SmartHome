@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UtilityPack.IO;
 
-namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
+namespace SmartHomeControlLibrary.CarbonMonoxideDetector.FINALFUNCTION {
 
     /// <summary>
     /// Interaction logic for SETTING.xaml
@@ -298,6 +299,5 @@ namespace SmartHomeControlLibrary.GASDETECTOR.FINALFUNCTION {
             }
         }
     }
-
 
 }

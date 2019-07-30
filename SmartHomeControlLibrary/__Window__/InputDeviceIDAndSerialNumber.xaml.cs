@@ -24,7 +24,6 @@ namespace SmartHomeControlLibrary.__Window__ {
 
         public InputDeviceIDAndSerialNumber() {
             InitializeComponent();
-
             this.txtID.Focus();
         }
 

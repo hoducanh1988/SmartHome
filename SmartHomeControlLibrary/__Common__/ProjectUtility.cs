@@ -595,5 +595,18 @@ namespace SmartHomeControlLibrary.__Common__ {
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Vref"></param>
+        /// <param name="adc_bitnumber"></param>
+        /// <param name="adc_value"></param>
+        /// <returns></returns>
+        public static double convertADCtomV(double Vref, int adc_bitnumber, double adc_value) {
+            double d = Math.Pow(2, adc_bitnumber) - 1;
+            return (Vref / d) * adc_value; 
+        }
+
     }
 }

@@ -187,7 +187,7 @@
                         </Border>
                     </Grid>
                     <Grid>
-                        <Label FontWeight="SemiBold" Content="Smoke (ppm)"/>
+                        <Label FontWeight="SemiBold" Content="Smoke (mV)"/>
                         <Border>
                             <WrapPanel Margin="5,0,0,0">
                                 <Label BorderThickness="0" Width="100" Content="Tiêu chuẩn: "/>

@@ -88,8 +88,14 @@
     <Compile Include="CO-DETECTOR\FINAL\design\RUNALL.xaml.cs">
       <DependentUpon>RUNALL.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\design\RUNALL_01.xaml.cs">
+      <DependentUpon>RUNALL_01.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CO-DETECTOR\FINAL\design\SETTING.xaml.cs">
       <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CO-DETECTOR\FINAL\design\SETTING_01.xaml.cs">
+      <DependentUpon>SETTING_01.xaml</DependentUpon>
     </Compile>
     <Compile Include="CO-DETECTOR\FINAL\function\myGlobal.cs" />
     <Compile Include="CO-DETECTOR\PCBA\design\ABOUT.xaml.cs">
@@ -247,8 +253,14 @@
     <Compile Include="SMOKE-DETECTOR\FINAL\design\RUNALL.xaml.cs">
       <DependentUpon>RUNALL.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\RUNALL_01.xaml.cs">
+      <DependentUpon>RUNALL_01.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SMOKE-DETECTOR\FINAL\design\SETTING.xaml.cs">
       <DependentUpon>SETTING.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SMOKE-DETECTOR\FINAL\design\SETTING_01.xaml.cs">
+      <DependentUpon>SETTING_01.xaml</DependentUpon>
     </Compile>
     <Compile Include="SMOKE-DETECTOR\FINAL\function\myGlobal.cs" />
     <Compile Include="SMOKE-DETECTOR\PCBA\design\ABOUT.xaml.cs">
@@ -391,7 +403,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\RUNALL_01.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CO-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CO-DETECTOR\FINAL\design\SETTING_01.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -575,7 +595,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\RUNALL_01.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SMOKE-DETECTOR\FINAL\design\SETTING.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SMOKE-DETECTOR\FINAL\design\SETTING_01.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
